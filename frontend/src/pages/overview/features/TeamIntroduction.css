@@ -1,0 +1,94 @@
+/* Team Grid and Academic Meta Styles */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.team-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.team-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.member-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--c-karaki);
+  border: 1px solid rgba(234, 88, 12, 0.4);
+  color: var(--c-light-peach);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 0 14px rgba(69, 26, 3, 0.4);
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.member-role {
+  font-size: 0.825rem;
+  color: var(--text-dim);
+}
+
+.member-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.academic-meta-card {
+  margin-top: 24px;
+  padding: 20px 28px;
+}
+
+.academic-meta-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.meta-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-block-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.meta-block-val {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+}

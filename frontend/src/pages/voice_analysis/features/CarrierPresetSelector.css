@@ -1,0 +1,141 @@
+/* Light Container Selectable Preset Telecom Scenarios */
+.preset-scenarios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-surface-solid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  box-shadow: 0 2px 10px rgba(69, 26, 3, 0.05);
+}
+
+.preset-scenarios-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-kicker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-kicker-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-persimmon);
+}
+
+.preset-scenarios-desc {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.preset-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.preset-scenario-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--bg-inset);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.preset-scenario-card:hover {
+  border-color: var(--c-persimmon);
+  background: var(--bg-surface-solid);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.12);
+}
+
+.preset-scenario-card.active {
+  background: var(--bg-surface-solid);
+  border-color: var(--c-persimmon);
+  box-shadow: 0 4px 18px rgba(234, 88, 12, 0.22);
+}
+
+.preset-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.preset-scenario-name {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+
+.preset-threat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  padding: 3px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.preset-threat-pill.danger {
+  color: var(--danger-red);
+  background: var(--danger-red-soft);
+  border: 1px solid var(--danger-red-border);
+}
+
+.preset-threat-pill.safe {
+  color: var(--safe-green);
+  background: var(--safe-green-soft);
+  border: 1px solid var(--safe-green-border);
+}
+
+.preset-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.preset-caller-number {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-persimmon);
+}
+
+.preset-network-pill {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .preset-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

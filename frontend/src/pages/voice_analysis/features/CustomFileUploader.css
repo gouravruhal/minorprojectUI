@@ -1,0 +1,136 @@
+/* Professional Forensic Audio File Uploader Section */
+.upload-section-card {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.upload-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.upload-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.upload-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.upload-section-desc {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin: 0;
+}
+.upload-dropzone-box {
+  border: 1.5px dashed var(--border-hover);
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: center;
+}
+.upload-dropzone-box:hover {
+  background: var(--bg-surface-solid);
+  border-color: var(--c-persimmon);
+  box-shadow: 0 4px 18px rgba(234, 88, 12, 0.12);
+}
+.dropzone-icon-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dropzone-text-group { display: flex; flex-direction: column; gap: 4px; }
+.dropzone-heading { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin: 0; }
+.dropzone-sub { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
+.benchmark-strip-container { display: flex; flex-direction: column; gap: 8px; }
+.benchmark-strip-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.benchmark-buttons-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.benchmark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface-solid);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.78rem;
+}
+.benchmark-btn:hover {
+  border-color: var(--c-persimmon);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.benchmark-btn-text { font-weight: 700; font-family: var(--font-mono); }
+.benchmark-pill { font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.benchmark-pill.danger {
+  color: var(--danger-red);
+  background: var(--danger-red-soft);
+  border: 1px solid var(--danger-red-border);
+}
+.benchmark-pill.safe {
+  color: var(--safe-green);
+  background: var(--safe-green-soft);
+  border: 1px solid var(--safe-green-border);
+}
+.loaded-file-meta-card {
+  background: var(--bg-surface-solid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.file-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.file-name-group { display: flex; align-items: center; gap: 10px; }
+.file-name-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); }
+.file-specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.file-spec-item {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.file-spec-lbl { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+.file-spec-val { font-size: 0.8rem; font-weight: 700; color: var(--text-main); font-family: var(--font-mono); }
+.file-actions-bar { display: flex; align-items: center; gap: 12px; }
+@media (max-width: 800px) {
+  .file-specs-grid { grid-template-columns: repeat(2, 1fr); }
+}

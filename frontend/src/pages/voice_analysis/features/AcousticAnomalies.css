@@ -1,0 +1,153 @@
+.call-analysis-anomalies-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg-surface-solid, #ffffff);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-sm, 8px);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.anomalies-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.anomalies-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.anomalies-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+}
+
+.anomaly-counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.anomaly-counter-pill.safe {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.anomaly-counter-pill.danger {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.anomaly-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.anomaly-pulse-dot.safe {
+  background: #16a34a;
+}
+
+.anomaly-pulse-dot.danger {
+  background: #dc2626;
+  animation: pulseSubtle 1.2s infinite;
+}
+
+.anomalies-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 280px;
+  overflow-y: auto;
+}
+
+.anomaly-card-item {
+  background: var(--bg-inset, #f8fafc);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-xs, 6px);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.anomaly-card-item.danger {
+  background: #fef2f2;
+  border-color: #fee2e2;
+  border-left: 3px solid #ef4444;
+}
+
+.anomaly-card-item.safe {
+  background: #f0fdf4;
+  border-color: #dcfce7;
+  border-left: 3px solid #10b981;
+}
+
+.anomaly-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anomaly-item-title {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+}
+
+.anomaly-status-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+}
+
+.anomaly-status-badge.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.anomaly-status-badge.safe {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.anomaly-metrics-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.74rem;
+}
+
+.anomaly-metric-val {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.anomaly-baseline-val {
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
+.anomaly-item-desc {
+  font-size: 0.72rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
+}

@@ -1,0 +1,112 @@
+.dynamic-risk-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+.meter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.meter-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.meter-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+.meter-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.radial-gauge-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.radial-svg {
+  transform: rotate(-90deg);
+}
+.gauge-track {
+  fill: none;
+  stroke: var(--bg-inset);
+}
+.gauge-progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.gauge-center-content {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-number-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.score-val {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.score-unit {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.score-subcaption {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.meter-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 240px;
+}
+.tier-explanation {
+  font-size: 0.825rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin: 0;
+}
+.meter-threshold-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.legend-marker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.safe-dot { background: var(--safe-green); }
+.warn-dot { background: var(--warn-amber); }
+.danger-dot { background: var(--danger-red); }

@@ -1,0 +1,125 @@
+.context-analysis-view {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 40px;
+}
+.context-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.context-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 650px;
+}
+.context-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+.context-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.context-preset-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.context-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.context-pill-btn.active {
+  background: var(--bg-surface-solid);
+  border-color: var(--c-persimmon);
+  color: var(--c-persimmon);
+}
+.context-main-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+}
+.transcript-panel, .nlp-telemetry-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.panel-header-row { display: flex; align-items: center; justify-content: space-between; }
+.panel-title-group { display: flex; align-items: center; gap: 10px; }
+.panel-heading { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+.stream-status-tag { font-size: 0.75rem; font-weight: 600; color: var(--c-persimmon); }
+.transcript-box {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.threat-keyword-highlight {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger-red);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.threat-entities-section { display: flex; flex-direction: column; gap: 10px; }
+.entity-tags-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.entity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.entity-tag.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.entity-tag.safe {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--safe-green);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+.telemetry-metric-cards { display: flex; flex-direction: column; gap: 14px; }
+.metric-score-card { display: flex; flex-direction: column; gap: 8px; }
+.metric-card-top { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.85rem; }
+.metric-bar-track { height: 8px; background: var(--bg-inset); border-radius: var(--radius-full); overflow: hidden; }
+.metric-bar-fill { height: 100%; transition: width 0.3s ease; }
+.fill-danger { background: var(--danger-red); }
+.fill-safe { background: var(--safe-green); }
+.metric-caption { font-size: 0.74rem; color: var(--text-muted); }
+.multi-modal-fusion-box {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fusion-breakdown-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.fusion-item { display: flex; flex-direction: column; gap: 2px; }
+.fusion-label { font-size: 0.72rem; color: var(--text-dim); }
+.fusion-val { font-size: 0.95rem; font-weight: 700; }
+.context-quick-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 900px) { .context-main-grid { grid-template-columns: 1fr; } }

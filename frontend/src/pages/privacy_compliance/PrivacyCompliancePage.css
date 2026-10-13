@@ -1,0 +1,119 @@
+.audit-report-view {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 40px;
+}
+.compliance-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.comp-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.comp-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.comp-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.comp-text {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  flex: 1;
+}
+.audit-table-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.table-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.table-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.export-log-btn {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+}
+.table-wrapper {
+  overflow-x: auto;
+}
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+}
+.audit-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.audit-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
+.session-cell {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+.timestamp-cell {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+.caller-cell {
+  font-weight: 600;
+}
+.channel-cell {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+.risk-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.pill-danger {
+  background: var(--danger-red-soft);
+  color: var(--danger-red);
+}
+.pill-safe {
+  background: var(--safe-green-soft);
+  color: var(--safe-green);
+}
+.action-cell {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+@media (max-width: 900px) {
+  .compliance-cards-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,116 @@
+/* Standby & Scanning Banners */
+.inspection-standby-card, .inspection-analyzing-card, .realtime-verdict-card {
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.standby-content-box { display: flex; align-items: center; gap: 20px; }
+.standby-icon-core {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #fff7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.standby-pulse-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(234, 88, 12, 0.3);
+  animation: pulseSubtle 1.8s infinite;
+}
+.standby-text-group { display: flex; flex-direction: column; gap: 4px; }
+.standby-badge { font-size: 0.72rem; font-weight: 800; color: #ea580c; text-transform: uppercase; }
+.standby-title { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0; }
+.standby-sub { font-size: 0.825rem; color: #475569; margin: 0; }
+
+/* Scanning Radar & Progress */
+.analyzing-layout { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.analyzing-radar-wrap { display: flex; align-items: center; justify-content: center; }
+.radar-circle-outer {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff7ed;
+  border: 2px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.analyzing-body { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+.analyzing-title-bar { display: flex; align-items: center; justify-content: space-between; }
+.analyzing-phase-tag { font-size: 0.72rem; font-weight: 800; color: #ea580c; }
+.analyzing-main-title { font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0; }
+.analyzing-counter { font-size: 1.3rem; font-weight: 800; color: #ea580c; }
+.analyzing-progress-track {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.analyzing-progress-fill { height: 100%; background: linear-gradient(90deg, #ea580c, #f97316); transition: width 0.3s; }
+.analyzing-steps-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.step-chip {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.step-chip.active { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.step-chip.done { background: #dcfce7; color: #15803d; }
+
+/* Verdict Banner */
+.realtime-verdict-card.critical { border-left: 4px solid var(--danger-red, #ef4444); background: #fef2f2; }
+.realtime-verdict-card.safe { border-left: 4px solid var(--safe-green, #10b981); background: #f0fdf4; }
+.verdict-header-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.verdict-title-group { display: flex; align-items: center; gap: 12px; }
+.verdict-title { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0; }
+.verdict-sub { font-size: 0.85rem; color: #475569; margin: 4px 0 0 0; }
+.verdict-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.verdict-metric-box {
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.verdict-metric-lbl { font-size: 0.68rem; color: #64748b; text-transform: uppercase; font-weight: 700; }
+.verdict-metric-val { font-size: 1.15rem; font-weight: 800; }
+
+/* Modals */
+.handshake-modal-overlay, .permission-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.handshake-modal-box, .permission-modal-box {
+  max-width: 500px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

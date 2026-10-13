@@ -1,0 +1,121 @@
+.alerts-prevention-view {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 40px;
+}
+.alerts-header {
+  padding: 24px;
+}
+.alerts-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 650px;
+}
+.alerts-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+.alerts-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.alerts-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.incident-stream-panel, .interventions-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.incident-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.timeline-card {
+  padding: 14px 16px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.timeline-card.critical {
+  border-left: 3px solid var(--danger-red);
+}
+.timeline-card.defense {
+  border-left: 3px solid var(--accent-cyan);
+}
+.timeline-card.info {
+  border-left: 3px solid var(--text-muted);
+}
+.timeline-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.timeline-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.timeline-badge.critical { color: var(--danger-red); }
+.timeline-badge.defense { color: var(--accent-cyan); }
+.timeline-badge.info { color: var(--text-muted); }
+.timeline-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.timeline-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+.timeline-detail {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin: 0;
+}
+.mfa-card, .prompts-accordion {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mfa-top, .prompts-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mfa-title, .prompts-title {
+  font-size: 0.925rem;
+  font-weight: 700;
+  margin: 0;
+}
+.mfa-sub, .prompts-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.mfa-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .alerts-main-grid { grid-template-columns: 1fr; }
+}

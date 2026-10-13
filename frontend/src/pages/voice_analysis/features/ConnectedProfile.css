@@ -1,0 +1,141 @@
+/* Minimal Clean & Responsive Connected Call Bar */
+.connected-device-profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg-surface-solid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.connected-main-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.connected-caller-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.connected-live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--safe-green);
+  background: var(--safe-green-soft);
+  border: 1px solid var(--safe-green-border);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+.connected-caller-meta { display: flex; flex-direction: column; gap: 2px; }
+.connected-caller-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.connected-caller-name { font-size: 0.96rem; font-weight: 800; color: var(--text-main); }
+.connected-kyc-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--c-persimmon);
+  background: var(--accent-orange-soft);
+  border: 1px solid var(--border-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.connected-channel-details {
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.connected-telemetry-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.connected-timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--c-persimmon);
+}
+.connected-actions-dock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+.connected-state-hint {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.connected-buttons-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn-start-ai-inspection {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  border: 1px solid rgba(254, 215, 170, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+.btn-start-ai-inspection:hover {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  transform: translateY(-1px);
+}
+.btn-stop-ai-inspection {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-disconnect-call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-disconnect-call:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: #ef4444;
+  color: #dc2626;
+}
+@media (max-width: 768px) {
+  .connected-main-bar, .connected-actions-dock { flex-direction: column; align-items: stretch; }
+  .connected-buttons-group { width: 100%; }
+  .btn-start-ai-inspection, .btn-stop-ai-inspection, .btn-disconnect-call { flex: 1; width: 100%; }
+}
