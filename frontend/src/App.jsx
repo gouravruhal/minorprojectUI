@@ -15,6 +15,10 @@ function MainApp() {
   const [navKey, setNavKey] = useState(0);
 
   const callSession = useCallSession();
+  const sessionRef = React.useRef(callSession);
+  useEffect(() => {
+    sessionRef.current = callSession;
+  });
 
   // Keep URL pathname and localStorage in sync with activeTab
   useEffect(() => {
@@ -32,8 +36,8 @@ function MainApp() {
       const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
       const matchedTab = ROUTE_TO_TAB[path];
       if (matchedTab && matchedTab !== activeTab) {
-        callSession.stopStream();
-        callSession.resetCallSession();
+        sessionRef.current.stopStream();
+        sessionRef.current.resetCallSession();
         setActiveTab(matchedTab);
         try {
           localStorage.setItem('voiceshield_active_tab', matchedTab);
@@ -43,7 +47,7 @@ function MainApp() {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [activeTab, callSession]);
+  }, [activeTab]);
 
   const handleSelectTab = (tab) => {
     if (tab === activeTab) return;

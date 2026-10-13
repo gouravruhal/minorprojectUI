@@ -24,13 +24,16 @@ export const ROUTE_TO_TAB = {
 
 export function getInitialTab() {
   if (typeof window !== 'undefined') {
-    const pathname = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
-    if (ROUTE_TO_TAB[pathname]) {
-      return ROUTE_TO_TAB[pathname];
+    const rawPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+    if (ROUTE_TO_TAB[rawPath]) {
+      return ROUTE_TO_TAB[rawPath];
     }
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    if (TAB_ROUTES[hash]) {
-      return hash;
+    const rawHash = window.location.hash.replace('#', '').toLowerCase().replace(/^\//, '');
+    if (ROUTE_TO_TAB['/' + rawHash]) {
+      return ROUTE_TO_TAB['/' + rawHash];
+    }
+    if (TAB_ROUTES[rawHash]) {
+      return rawHash;
     }
     try {
       const saved = localStorage.getItem('voiceshield_active_tab');
