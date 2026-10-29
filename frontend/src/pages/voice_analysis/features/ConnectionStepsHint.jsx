@@ -10,8 +10,8 @@ export function ConnectionStepsHint({ wirelessStatus }) {
       <div className="step-node-item">
         <span className="step-num-pill">1</span>
         <div className="step-node-content">
-          <span className="step-title">Enable VoLTE / HD Voice</span>
-          <span className="step-desc">Mobile Network & Wi-Fi Calling</span>
+          <span className="step-title">Connect Phone to Laptop</span>
+          <span className="step-desc">Bluetooth Audio / Line-In / Mic</span>
         </div>
       </div>
 
@@ -20,8 +20,8 @@ export function ConnectionStepsHint({ wirelessStatus }) {
       <div className="step-node-item">
         <span className="step-num-pill">2</span>
         <div className="step-node-content">
-          <span className="step-title">Turn on Audio Tethering</span>
-          <span className="step-desc">Bluetooth / Wireless Gateway</span>
+          <span className="step-title">Keep Live Call Active</span>
+          <span className="step-desc">Call active with remote phone</span>
         </div>
       </div>
 
@@ -30,8 +30,8 @@ export function ConnectionStepsHint({ wirelessStatus }) {
       <div className="step-node-item">
         <span className="step-num-pill">3</span>
         <div className="step-node-content">
-          <span className="step-title">Keep Live Call Active</span>
-          <span className="step-desc">Then click Connect Device</span>
+          <span className="step-title">Record & Analyze</span>
+          <span className="step-desc">Click Connect Live Call</span>
         </div>
       </div>
     </div>

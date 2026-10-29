@@ -1,16 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { SIMULATION_PRESETS } from '../../../core/state/useCallSession';
 import { audioEngine } from '../../../core/audio/audio_engine';
 import { playConnectTone, resolveSubscriberIdentity, generateSampleFileResult, processUploadedAudioFile } from './voiceAnalysisHelpers';
 import { createScenarioDetectionLogs } from './scenarioLogsHelper';
+import { useLiveCallRecorder } from './useLiveCallRecorder';
 
 export function useVoiceAnalysisState({
-  activeCall, isStreaming, onStartStream: _onStartStream, onStopStream, onUpdateActiveCall, onResetCallSession
+  activeCall, isStreaming: _isStreaming, onStopStream, onUpdateActiveCall, onResetCallSession
 }) {
   const [ingestMode, setIngestMode] = useState('preset');
   const [uploadedFile, setUploadedFile] = useState(null);
   const [customFileResult, setCustomFileResult] = useState(null);
   const fileInputRef = useRef(null);
+  const recorder = useLiveCallRecorder();
 
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const [phoneNumberDigits, setPhoneNumberDigits] = useState('98110 44291');
@@ -22,12 +24,6 @@ export function useVoiceAnalysisState({
   const [permissionDeniedMessage, setPermissionDeniedMessage] = useState(null);
   const [sessionStartTime, setSessionStartTime] = useState('');
 
-  const [isDeviceCallActive, setIsDeviceCallActive] = useState(false);
-  const [deviceCallDuration, setDeviceCallDuration] = useState(0);
-  const [simAudioSource, setSimAudioSource] = useState('carrier');
-
-  const [inspectionPhase, setInspectionPhase] = useState('idle');
-  const [analysisProgress, setAnalysisProgress] = useState(0);
   const [callAnalysisLogs, setCallAnalysisLogs] = useState([]);
   const [logFilter, setLogFilter] = useState('all');
   const [copiedLogs, setCopiedLogs] = useState(false);
@@ -36,8 +32,6 @@ export function useVoiceAnalysisState({
   const [realtimeFrame, setRealtimeFrame] = useState(1);
   const [realtimeDelta, setRealtimeDelta] = useState(0);
   const [realtimePhonemeSegment, setRealtimePhonemeSegment] = useState('Voiced Harmonic Segment (F0: 132 Hz)');
-  const [wifiSignalDbm, setWifiSignalDbm] = useState(-52);
-  const [wifiPingMs, setWifiPingMs] = useState(12);
 
   useEffect(() => {
     onStopStream?.(); onResetCallSession?.(); audioEngine.stopAll();
@@ -59,34 +53,6 @@ export function useVoiceAnalysisState({
     return () => clearTimeout(t);
   }, [activeCall]);
 
-  useEffect(() => {
-    let t0, t1, t2;
-    if (!isStreaming) {
-      t0 = setTimeout(() => { setInspectionPhase('idle'); setAnalysisProgress(0); }, 0);
-    } else {
-      t0 = setTimeout(() => { setInspectionPhase('analyzing'); setAnalysisProgress(25); }, 0);
-      t1 = setTimeout(() => setAnalysisProgress(75), 500);
-      t2 = setTimeout(() => { setAnalysisProgress(100); setInspectionPhase('active'); }, 1000);
-    }
-    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
-  }, [isStreaming]);
-
-  useEffect(() => {
-    if (!isDeviceCallActive || wirelessStatus !== 'connected') return;
-    const interval = setInterval(() => setDeviceCallDuration((prev) => prev + 1), 1000);
-    return () => clearInterval(interval);
-  }, [isDeviceCallActive, wirelessStatus]);
-
-  useEffect(() => {
-    if (wirelessStatus !== 'connected') return;
-    const interval = setInterval(() => {
-      const j = Math.floor((Math.random() - 0.5) * 4);
-      setWifiSignalDbm(-52 + j);
-      setWifiPingMs(Math.max(8, Math.min(20, 12 + j)));
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [wirelessStatus]);
-
   const handleCountryCodeChange = (e) => {
     const code = e.target.value; setSelectedCountryCode(code);
     const combined = `${code} ${phoneNumberDigits}`.trim();
@@ -103,33 +69,56 @@ export function useVoiceAnalysisState({
     setEnteredName(name); onUpdateActiveCall?.({ callerNumber: combined, callerName: name });
   };
 
-  const handleConnectDeviceClick = () => {
-    setPermissionDeniedMessage(null); setWirelessStatus('processing'); setHandshakeStep(1);
-    setTimeout(() => setHandshakeStep(2), 650);
-    setTimeout(() => setHandshakeStep(3), 1350);
-    setTimeout(() => setHandshakeStep(4), 2050);
-    setTimeout(() => {
-      playConnectTone();
-      setSessionStartTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-      setWirelessStatus('connected'); setIsDeviceCallActive(true); setDeviceCallDuration(0);
-    }, 2700);
-  };
+  const handleStartLiveCall = useCallback(async () => {
+    setPermissionDeniedMessage(null);
+    setWirelessStatus('processing');
+    setHandshakeStep(1);
+    setTimeout(() => setHandshakeStep(2), 400);
+    setTimeout(() => setHandshakeStep(3), 800);
+    setTimeout(async () => {
+      const res = await recorder.startCall(enteredNumber);
+      if (res.success) {
+        playConnectTone();
+        setSessionStartTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        setWirelessStatus('connected');
+      } else {
+        setWirelessStatus('idle');
+        setPermissionDeniedMessage(res.error || 'Microphone/Audio Gateway access was not granted.');
+      }
+    }, 1200);
+  }, [recorder, enteredNumber]);
 
-  const handleDisconnectDevice = () => {
+  const handleStopAndSaveCall = useCallback(async () => {
+    const rec = await recorder.stopCall(enteredNumber);
+    setWirelessStatus('idle');
+    onStopStream?.();
+    audioEngine.stopAll();
+    return rec;
+  }, [recorder, enteredNumber, onStopStream]);
+
+  const handleAnalyzeSavedRecording = useCallback((recording) => {
+    const rec = recording || recorder.savedRecording;
+    if (!rec?.blob) return;
+    const file = new File([rec.blob], rec.filename, { type: rec.blob.type || 'audio/webm' });
+    setUploadedFile(file);
+    setCustomFileResult(processUploadedAudioFile(file));
+    setIngestMode('upload');
+  }, [recorder.savedRecording]);
+
+  const handleDisconnectDevice = useCallback(() => {
+    recorder.stopCall();
     onStopStream?.(); onResetCallSession?.(); audioEngine.stopAll();
-    setWirelessStatus('idle'); setIsDeviceCallActive(false); setDeviceCallDuration(0);
-    setInspectionPhase('idle'); setAnalysisProgress(0); setCallAnalysisLogs([]); setRealtimeFrame(1);
-  };
+    setWirelessStatus('idle'); setCallAnalysisLogs([]); setRealtimeFrame(1);
+  }, [recorder, onStopStream, onResetCallSession]);
 
   return {
     ingestMode, setIngestMode, uploadedFile, setUploadedFile, customFileResult, setCustomFileResult, fileInputRef,
     selectedCountryCode, phoneNumberDigits, enteredNumber, enteredName, wirelessStatus, setWirelessStatus,
-    handshakeStep, permissionDeniedMessage, setPermissionDeniedMessage, sessionStartTime,
-    isDeviceCallActive, deviceCallDuration, simAudioSource, setSimAudioSource,
-    inspectionPhase, analysisProgress, callAnalysisLogs, setCallAnalysisLogs, logFilter, setLogFilter,
-    copiedLogs, setCopiedLogs, logsContainerRef, realtimeFrame, setRealtimeFrame, realtimeDelta, setRealtimeDelta,
-    realtimePhonemeSegment, setRealtimePhonemeSegment, wifiSignalDbm, wifiPingMs,
-    handleCountryCodeChange, handlePhoneNumberDigitsChange, handleConnectDeviceClick, handleDisconnectDevice,
+    handshakeStep, permissionDeniedMessage, setPermissionDeniedMessage, sessionStartTime, recorder,
+    callAnalysisLogs, setCallAnalysisLogs, logFilter, setLogFilter, copiedLogs, setCopiedLogs, logsContainerRef,
+    realtimeFrame, setRealtimeFrame, realtimeDelta, setRealtimeDelta, realtimePhonemeSegment, setRealtimePhonemeSegment,
+    handleCountryCodeChange, handlePhoneNumberDigitsChange, handleStartLiveCall, handleStopAndSaveCall,
+    handleAnalyzeSavedRecording, handleDisconnectDevice,
     handleLoadSampleFile: (type) => {
       const { file, result } = generateSampleFileResult(type);
       setUploadedFile(file); setCustomFileResult(result);

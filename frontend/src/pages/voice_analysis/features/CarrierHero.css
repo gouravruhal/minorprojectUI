@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-sm);
-  padding: 22px 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: var(--bg-surface-solid, #ffffff);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-sm, 8px);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
 }
 .entrance-header-row {
   display: flex;
@@ -18,103 +18,124 @@
 .entrance-label-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 .telephony-feature-heading {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main, #0f172a);
   letter-spacing: -0.01em;
   margin: 0;
 }
-.telephony-feature-purpose {
-  font-size: 0.825rem;
-  color: #475569;
-  margin: 0;
-  line-height: 1.45;
+.telephony-feature-sub {
+  font-size: 0.76rem;
+  color: var(--text-dim, #64748b);
 }
-.wireless-indicator-badge {
-  display: inline-flex;
-  align-items: center;
+.telecom-setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.status-badge.connected {
-  background: #dcfce7;
-  border: 1px solid #86efac;
-  color: #15803d;
-  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.12);
-}
-.status-badge.connecting,
-.status-badge.requesting {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  color: #c2410c;
-  box-shadow: 0 1px 3px rgba(234, 88, 12, 0.12);
-}
-.sim-pulse-dot.warning {
-  background: #fbbf24;
-  box-shadow: 0 0 8px #fbbf24;
-}
-.number-entrance-row {
+.telecom-input-block {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
+}
+.telecom-field-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .phone-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-xs);
-  padding: 6px 12px;
-  flex: 1;
-  min-width: 320px;
-  max-width: 560px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 8px;
+  background: var(--bg-inset, #f8fafc);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-xs, 6px);
+  padding: 4px 8px;
 }
 .country-code-dropdown {
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-size: 0.825rem;
+  background: transparent;
+  color: var(--text-main, #0f172a);
+  border: none;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
+  outline: none;
 }
 .telephony-number-input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
-  color: #0f172a;
-  font-size: 1.1rem;
+  color: var(--text-main, #0f172a);
+  font-size: 0.95rem;
   font-weight: 800;
   padding: 4px 6px;
+}
+.gateway-select-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.audio-gateway-dropdown {
+  flex: 1;
+  background: var(--bg-inset, #f8fafc);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-xs, 6px);
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  color: var(--text-main, #0f172a);
+  outline: none;
+  cursor: pointer;
+}
+.volume-meter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-inset, #f8fafc);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-xs, 6px);
+  padding: 6px 10px;
+}
+.volume-meter-bar {
+  width: 50px;
+  height: 6px;
+  background: #cbd5e1;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.volume-meter-fill {
+  height: 100%;
+  background: var(--c-persimmon, #ea580c);
+  transition: width 0.1s ease;
+}
+.entrance-connect-bar {
+  display: flex;
+  align-items: center;
+  padding-top: 4px;
 }
 .btn-connect-wireless {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: var(--radius-xs);
-  background: linear-gradient(135deg, #ea580c, #c2410c);
+  padding: 10px 22px;
+  border-radius: var(--radius-xs, 6px);
+  background: var(--c-persimmon, #ea580c);
   color: #ffffff;
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   border: none;
+  transition: all 0.2s ease;
+}
+.btn-connect-wireless:hover {
+  background: #c2410c;
+  box-shadow: 0 2px 10px rgba(234, 88, 12, 0.25);
+}
+@media (max-width: 768px) {
+  .telecom-setup-grid { grid-template-columns: 1fr; }
 }

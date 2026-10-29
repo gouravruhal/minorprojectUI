@@ -1,19 +1,16 @@
 import React from 'react';
-import { Zap, Square, PhoneOff, ShieldCheck, Clock, Wifi } from 'lucide-react';
+import { Zap, Square, PhoneOff, Clock, Volume2 } from 'lucide-react';
 import './ConnectedProfile.css';
 
 export function ConnectedSubscriberProfile({
-  enteredName,
   enteredNumber,
-  activeCall,
-  wifiSignalDbm,
-  wifiPingMs,
-  onCycleWifiTest,
   deviceCallDuration,
   formatCallTimer,
+  audioVolume = 0,
   isStreaming,
   onStartInspectionStream,
   onStopInspection,
+  onStopAndSaveCall,
   onDisconnectDevice
 }) {
   return (
@@ -21,39 +18,25 @@ export function ConnectedSubscriberProfile({
       <div className="connected-main-bar">
         <div className="connected-caller-info">
           <span className="connected-live-chip">
-            <span className="sim-pulse-dot" />
-            <span>LIVE CALL CONNECTED</span>
+            <span className="sim-pulse-dot pulse-danger" />
+            <span>RECORDING LIVE CALL</span>
           </span>
 
           <div className="connected-caller-meta">
             <div className="connected-caller-name-row">
-              <span className="connected-caller-name">{enteredName || activeCall?.callerName || 'Registered Subscriber'}</span>
-              <span className="connected-kyc-tag">
-                <ShieldCheck size={11} style={{ display: 'inline', marginRight: 3 }} />
-                KYC Verified
-              </span>
-            </div>
-            <div className="connected-channel-details">
-              <span className="mono-metric" style={{ fontWeight: 700, color: 'var(--c-persimmon)' }}>{enteredNumber}</span>
-              <span>•</span>
-              <span>{activeCall?.network || 'VoLTE'}</span>
-              <span>•</span>
-              <span>16kHz PCM</span>
+              <span className="connected-caller-name mono-metric">{enteredNumber}</span>
+              <span className="connected-channel-tag">Cellular Bridge</span>
             </div>
           </div>
         </div>
 
         <div className="connected-telemetry-right">
-          <button
-            type="button"
-            className="btn-outline"
-            onClick={onCycleWifiTest}
-            title="Wi-Fi Calling / Cellular RF Signal Gateway"
-            style={{ padding: '5px 10px', fontSize: '0.75rem', gap: 6 }}
-          >
-            <Wifi size={13} className="text-safe" />
-            <span className="mono-metric">{wifiSignalDbm || -52} dBm • {wifiPingMs || 12}ms</span>
-          </button>
+          <div className="connected-volume-pill" title={`Audio input level: ${audioVolume}%`}>
+            <Volume2 size={13} className={audioVolume > 10 ? 'text-orange' : 'text-dim'} />
+            <div className="connected-vu-track">
+              <div className="connected-vu-fill" style={{ width: `${audioVolume}%` }} />
+            </div>
+          </div>
 
           <div className="connected-timer-pill mono-metric">
             <Clock size={13} />
@@ -63,14 +46,17 @@ export function ConnectedSubscriberProfile({
       </div>
 
       <div className="connected-actions-dock">
-        <div className="connected-state-hint">
-          <span className={`sim-pulse-dot ${isStreaming ? 'pulse-danger' : ''}`} />
-          <span>
-            {isStreaming ? 'Neural Anomaly Detection Active • 400ms Sliding Window' : 'Audio Stream Bridged • Ready for AI Voice Inspection'}
-          </span>
-        </div>
-
         <div className="connected-buttons-group">
+          <button
+            id="stop-and-save-call-btn"
+            className="btn-primary"
+            onClick={onStopAndSaveCall}
+            type="button"
+          >
+            <Square size={14} />
+            <span>Stop Call & Save Recording</span>
+          </button>
+
           {!isStreaming ? (
             <button
               id="start-ai-inspection-btn"
@@ -79,7 +65,7 @@ export function ConnectedSubscriberProfile({
               type="button"
             >
               <Zap size={15} />
-              <span>Start AI Voice Inspection</span>
+              <span>Inspect Live Audio</span>
             </button>
           ) : (
             <button
@@ -89,7 +75,7 @@ export function ConnectedSubscriberProfile({
               type="button"
             >
               <Square size={14} />
-              <span>Stop AI Inspection</span>
+              <span>Stop Live Inspection</span>
             </button>
           )}
 
@@ -98,10 +84,10 @@ export function ConnectedSubscriberProfile({
             className="btn-disconnect-call"
             onClick={onDisconnectDevice}
             type="button"
-            title="Hang up live call and disconnect device"
+            title="Hang up call without saving"
           >
             <PhoneOff size={14} />
-            <span>Disconnect Call</span>
+            <span>Disconnect</span>
           </button>
         </div>
       </div>

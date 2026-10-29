@@ -1,0 +1,66 @@
+.saved-recording-card {
+  background: var(--bg-surface-solid, #ffffff);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-sm, 8px);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.saved-recording-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.saved-recording-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.saved-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.saved-phone-number {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+}
+
+.saved-meta-text {
+  font-size: 0.75rem;
+  color: var(--text-dim, #64748b);
+}
+
+.saved-recording-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.saved-player-strip {
+  width: 100%;
+  padding-top: 4px;
+}
+
+.saved-audio-player {
+  width: 100%;
+  height: 38px;
+  border-radius: 6px;
+  outline: none;
+}

@@ -12,8 +12,7 @@ export function IngestModeRenderer({
   isStreaming,
   streamMode,
   onStartStream,
-  onStopStream,
-  onSelectPreset
+  onStopStream
 }) {
   if (state.ingestMode === 'mic') {
     return (
@@ -62,18 +61,14 @@ export function IngestModeRenderer({
   if (state.wirelessStatus === 'connected') {
     return (
       <ConnectedSubscriberProfile
-        sessionStartTime={state.sessionStartTime}
-        enteredName={state.enteredName}
         enteredNumber={state.enteredNumber}
-        activeCall={activeCall}
-        wifiSignalDbm={state.wifiSignalDbm}
-        wifiPingMs={state.wifiPingMs}
-        onCycleWifiTest={() => state.handleConnectDeviceClick()}
-        deviceCallDuration={state.deviceCallDuration}
+        deviceCallDuration={state.recorder.callSeconds}
         formatCallTimer={formatCallTimer}
+        audioVolume={state.recorder.audioVolume}
         isStreaming={isStreaming}
         onStartInspectionStream={() => onStartStream('simulation')}
         onStopInspection={onStopStream}
+        onStopAndSaveCall={state.handleStopAndSaveCall}
         onDisconnectDevice={state.handleDisconnectDevice}
       />
     );
@@ -86,12 +81,14 @@ export function IngestModeRenderer({
       onCountryCodeChange={state.handleCountryCodeChange}
       phoneNumberDigits={state.phoneNumberDigits}
       onPhoneNumberDigitsChange={state.handlePhoneNumberDigitsChange}
-      onConnectDeviceClick={state.handleConnectDeviceClick}
-      onDisconnectDevice={state.handleDisconnectDevice}
-      onCancelConnecting={() => state.setWirelessStatus('idle')}
-      onSelectPreset={onSelectPreset}
-      activeCall={activeCall}
-      permissionDeniedMessage={state.permissionDeniedMessage}
+      audioDevices={state.recorder.audioDevices}
+      selectedAudioDeviceId={state.recorder.selectedDeviceId}
+      onSelectAudioDevice={state.recorder.setSelectedDeviceId}
+      audioVolume={state.recorder.audioVolume}
+      savedRecording={state.recorder.savedRecording}
+      onStartLiveCall={state.handleStartLiveCall}
+      onAnalyzeRecording={state.handleAnalyzeSavedRecording}
+      onResetCall={state.recorder.clearRecording}
     />
   );
 }
