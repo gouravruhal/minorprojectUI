@@ -137,3 +137,4 @@ export function downloadRecording(blob, filename = 'live_call_recording.webm') {
     URL.revokeObjectURL(url);
   }, 100);
 }
+

@@ -30,10 +30,13 @@ export function VoiceAnalysisPage({
     onResetCallSession
   });
 
+  const isUploadMode = state.ingestMode === 'upload';
+  const customRes = state.fileAnalysis.customFileResult;
+  const liveRes = state.backendStream.liveResult;
   const isCritical = currentRiskScore >= 70;
-  const isDisplaySynthetic = state.ingestMode === 'upload' && state.customFileResult 
-    ? state.customFileResult.isSynthetic 
-    : isCritical;
+  const isDisplaySynthetic = isUploadMode && customRes 
+    ? customRes.isSynthetic 
+    : liveRes ? liveRes.is_synthetic : isCritical;
 
   return (
     <div className="voice-analysis-console">
@@ -57,13 +60,14 @@ export function VoiceAnalysisPage({
       {isStreaming && (
         <>
           <RealtimeVerdictBanner
+            label={liveRes?.label || customRes?.label}
             isDisplaySynthetic={isDisplaySynthetic}
             isStreaming={isStreaming}
             realtimeFrame={state.realtimeFrame}
-            liveConfidence={isDisplaySynthetic ? 98.4 : 96.8}
-            liveSyntheticProb={isDisplaySynthetic ? (currentRiskScore || 94.2) : 5.8}
+            liveConfidence={liveRes?.confidence ? Math.round(liveRes.confidence * 100) : (isDisplaySynthetic ? 98.4 : 96.8)}
+            liveSyntheticProb={liveRes?.synthetic_probability !== undefined ? liveRes.synthetic_probability : (isDisplaySynthetic ? (currentRiskScore || 94.2) : 5.8)}
             realtimePhonemeSegment={state.realtimePhonemeSegment}
-            activeCall={activeCall}
+            modelIdentifier={liveRes?.model_identifier || customRes?.modelIdentifier || 'voiceshield-acoustic-dsp-v1'}
           />
 
           <LiveWaveformSection
@@ -87,10 +91,10 @@ export function VoiceAnalysisPage({
             logsContainerRef={state.logsContainerRef}
             isDisplaySynthetic={isDisplaySynthetic}
             isStreaming={isStreaming}
-            liveJitter={isDisplaySynthetic ? '0.08%' : `${activeCall?.jitterPPQ || 0.74}%`}
-            liveShimmer={isDisplaySynthetic ? '0.40%' : `${activeCall?.shimmerAPQ || 2.15}%`}
+            liveJitter={liveRes?.metrics?.jitter_ppq ? `${liveRes.metrics.jitter_ppq}%` : isDisplaySynthetic ? '0.08%' : `${activeCall?.jitterPPQ || 0.74}%`}
+            liveShimmer={liveRes?.metrics?.shimmer_apq ? `${liveRes.metrics.shimmer_apq}%` : isDisplaySynthetic ? '0.40%' : `${activeCall?.shimmerAPQ || 2.15}%`}
             liveLiveness={isDisplaySynthetic ? '12%' : '94%'}
-            spectralCentroid={activeCall?.spectralCentroid || 2140}
+            spectralCentroid={liveRes?.metrics?.spectral_centroid || activeCall?.spectralCentroid || 2140}
           />
         </>
       )}

@@ -4,6 +4,7 @@ import './ConnectedProfile.css';
 
 export function ConnectedSubscriberProfile({
   enteredNumber,
+  audioSourceLabel = 'Cellular Bridge (Speakerphone)',
   deviceCallDuration,
   formatCallTimer,
   audioVolume = 0,
@@ -25,7 +26,7 @@ export function ConnectedSubscriberProfile({
           <div className="connected-caller-meta">
             <div className="connected-caller-name-row">
               <span className="connected-caller-name mono-metric">{enteredNumber}</span>
-              <span className="connected-channel-tag">Cellular Bridge</span>
+              <span className="connected-channel-tag">{audioSourceLabel}</span>
             </div>
           </div>
         </div>

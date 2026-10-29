@@ -21,6 +21,10 @@ export function IngestModeRenderer({
         streamMode={streamMode}
         onStartStream={onStartStream}
         onStopStream={onStopStream}
+        liveResult={state.backendStream.liveResult}
+        micVolume={state.recorder.audioVolume}
+        elapsedSeconds={state.recorder.callSeconds}
+        formatCallTimer={formatCallTimer}
       />
     );
   }
@@ -29,19 +33,20 @@ export function IngestModeRenderer({
     return (
       <CustomFileUploader
         fileInputRef={state.fileInputRef}
-        uploadedFile={state.uploadedFile}
-        customFileResult={state.customFileResult}
+        uploadedFile={state.fileAnalysis.uploadedFile}
+        customFileResult={state.fileAnalysis.customFileResult}
+        uploadProgress={state.fileAnalysis.uploadProgress}
+        isUploading={state.fileAnalysis.isUploading}
+        fileError={state.fileAnalysis.fileError}
         onFileChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) state.handleFileUpload(file);
+          if (file) state.fileAnalysis.handleFileUpload(file, true);
         }}
-        onLoadSampleFile={(sampleType) => {
-          state.handleLoadSampleFile(sampleType);
-        }}
+        onLoadSampleFile={state.fileAnalysis.handleLoadSampleFile}
         isStreaming={isStreaming}
         onStartStream={() => onStartStream('file')}
         onStopStream={onStopStream}
-        onClearFile={state.handleClearUploadedFile}
+        onClearFile={state.fileAnalysis.handleClearFile}
       />
     );
   }
@@ -59,9 +64,16 @@ export function IngestModeRenderer({
   }
 
   if (state.wirelessStatus === 'connected') {
+    const sourceLabel = state.telecomSource === 'twilio_provider'
+      ? 'Twilio Media Stream'
+      : state.telecomSource === 'audio_interface'
+      ? 'External Audio Bridge'
+      : 'Cellular Bridge (Speakerphone)';
+
     return (
       <ConnectedSubscriberProfile
         enteredNumber={state.enteredNumber}
+        audioSourceLabel={sourceLabel}
         deviceCallDuration={state.recorder.callSeconds}
         formatCallTimer={formatCallTimer}
         audioVolume={state.recorder.audioVolume}
@@ -74,9 +86,21 @@ export function IngestModeRenderer({
     );
   }
 
+  const connState = state.wirelessStatus === 'connected'
+    ? 'connected'
+    : state.wirelessStatus === 'processing'
+    ? 'connecting'
+    : !state.userConsent
+    ? 'awaiting_consent'
+    : 'disconnected';
+
   return (
     <CarrierConnectionHero
-      wirelessStatus={state.wirelessStatus}
+      connectionState={connState}
+      selectedSource={state.telecomSource}
+      onSelectSource={state.setTelecomSource}
+      userConsent={state.userConsent}
+      onToggleConsent={state.setUserConsent}
       selectedCountryCode={state.selectedCountryCode}
       onCountryCodeChange={state.handleCountryCodeChange}
       phoneNumberDigits={state.phoneNumberDigits}
@@ -89,6 +113,8 @@ export function IngestModeRenderer({
       onStartLiveCall={state.handleStartLiveCall}
       onAnalyzeRecording={state.handleAnalyzeSavedRecording}
       onResetCall={state.recorder.clearRecording}
+      errorMessage={state.telecomError}
+      troubleshooting={state.telecomTrouble}
     />
   );
 }

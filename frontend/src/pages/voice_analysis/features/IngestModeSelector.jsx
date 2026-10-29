@@ -25,8 +25,8 @@ export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onSt
             <PhoneCall size={18} />
           </div>
           <div className="mode-tab-content">
-            <span className="mode-tab-title">Telecom Presets</span>
-            <span className="mode-tab-subtitle">Connect Live Call</span>
+            <span className="mode-tab-title">Telecom Live Analysis</span>
+            <span className="mode-tab-subtitle">Provider or Cellular Bridge</span>
           </div>
         </button>
 
@@ -41,8 +41,8 @@ export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onSt
             <Mic size={18} />
           </div>
           <div className="mode-tab-content">
-            <span className="mode-tab-title">Live Microphone</span>
-            <span className="mode-tab-subtitle">Device Microphone</span>
+            <span className="mode-tab-title">Microphone Analysis</span>
+            <span className="mode-tab-subtitle">Laptop Microphone</span>
           </div>
         </button>
 
@@ -57,8 +57,8 @@ export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onSt
             <FileAudio size={18} />
           </div>
           <div className="mode-tab-content">
-            <span className="mode-tab-title">Recording</span>
-            <span className="mode-tab-subtitle">Analyze Recording</span>
+            <span className="mode-tab-title">Recorded Audio Analysis</span>
+            <span className="mode-tab-subtitle">WAV, MP3, WebM Upload</span>
           </div>
         </button>
       </div>
