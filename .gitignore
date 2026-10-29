@@ -36,3 +36,14 @@ pnpm-debug.log*
 *.sln
 *.sw?
 Thumbs.db
+
+# Python & Database
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+*.sqlite
+*.sqlite3
+temp_uploads/
+.pytest_cache/
+AI/models/*.joblib

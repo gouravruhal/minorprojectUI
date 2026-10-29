@@ -50,6 +50,16 @@ export function useVoiceAnalysisState({
     return () => clearTimeout(t);
   }, [activeCall]);
 
+  useEffect(() => {
+    if (_isStreaming && ingestMode === 'mic') {
+      if (audioEngine.mediaStream) {
+        backendStream.startStream('microphone', 'laptop_microphone', true, audioEngine.mediaStream);
+      }
+    } else if (!_isStreaming && backendStream.connectionState !== 'disconnected') {
+      backendStream.stopStream();
+    }
+  }, [_isStreaming, ingestMode, backendStream]);
+
   const handleCountryCodeChange = (e) => {
     const code = e.target.value; setSelectedCountryCode(code);
     const combined = `${code} ${phoneNumberDigits}`.trim();
@@ -104,10 +114,8 @@ export function useVoiceAnalysisState({
 
   const handleStopAndSaveCall = useCallback(async () => {
     const rec = await recorder.stopCall(enteredNumber);
-    backendStream.stopStream();
-    setWirelessStatus('idle');
-    onStopStream?.();
-    audioEngine.stopAll();
+    backendStream.stopStream(); setWirelessStatus('idle');
+    onStopStream?.(); audioEngine.stopAll();
     return rec;
   }, [recorder, enteredNumber, backendStream, onStopStream]);
 

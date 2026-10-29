@@ -113,3 +113,10 @@
 .box-val { font-size: 0.85rem; font-weight: 800; color: var(--text-main, #0f172a); }
 .box-sub { font-size: 0.65rem; color: var(--text-dim, #94a3b8); }
 .report-disclaimer-strip { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; color: var(--text-dim, #94a3b8); }
+
+.report-segments-strip { display: flex; flex-direction: column; gap: 6px; }
+.segments-strip-title { font-size: 0.72rem; font-weight: 700; color: var(--text-muted, #64748b); }
+.segments-pills-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.segment-tag { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.segment-tag.tag-danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+.segment-tag.tag-safe { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); }

@@ -2,6 +2,7 @@
  * VoiceShield AI - Core Audio Engine
  * Handles Web Audio API Analyser, Microphone Capture, and Synthetic Telemetry Generator for presets.
  */
+import { createSimulationSynth } from './simulationSynth';
 
 class AudioEngine {
   constructor() {
@@ -13,7 +14,6 @@ class AudioEngine {
     this.mode = 'idle'; // 'mic' | 'simulation' | 'idle'
     this.simulationPreset = null;
     this.simOscillator = null;
-    this.simNoise = null;
     this.simGain = null;
   }
 
@@ -25,7 +25,6 @@ class AudioEngine {
     if (this.audioContext.state === 'suspended') {
       await this.audioContext.resume();
     }
-
     if (!this.analyser) {
       this.analyser = this.audioContext.createAnalyser();
       this.analyser.fftSize = 1024;
@@ -33,40 +32,31 @@ class AudioEngine {
     }
   }
 
-  /**
-   * Start live microphone input
-   */
   async startMicrophone() {
     await this.initAudioContext();
     this.stopSimulation();
-
     try {
       this.mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
-          noiseSuppression: false, // We want raw acoustic properties
+          noiseSuppression: false,
           autoGainControl: false,
           sampleRate: 16000
         }
       });
-
       this.sourceNode = this.audioContext.createMediaStreamSource(this.mediaStream);
       this.sourceNode.connect(this.analyser);
       this.isRunning = true;
       this.mode = 'mic';
       return { success: true };
     } catch (err) {
-      console.error('Failed to access microphone:', err);
       return { success: false, error: err.message };
     }
   }
 
-  /**
-   * Stop microphone input
-   */
   stopMicrophone() {
     if (this.mediaStream) {
-      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.mediaStream.getTracks().forEach((track) => track.stop());
       this.mediaStream = null;
     }
     if (this.sourceNode) {
@@ -79,17 +69,12 @@ class AudioEngine {
     }
   }
 
-  /**
-   * Play and analyze uploaded audio file
-   */
   async playAudioFile(file) {
     await this.initAudioContext();
     this.stopAll();
-
     try {
       const arrayBuffer = await file.arrayBuffer();
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(this.analyser);
@@ -105,14 +90,13 @@ class AudioEngine {
         this.mode = 'idle';
       };
 
-      return { 
-        success: true, 
-        duration: audioBuffer.duration, 
+      return {
+        success: true,
+        duration: audioBuffer.duration,
         sampleRate: audioBuffer.sampleRate,
         channels: audioBuffer.numberOfChannels
       };
     } catch (err) {
-      console.error('Failed to decode audio file:', err);
       return { success: false, error: err.message };
     }
   }
@@ -131,9 +115,6 @@ class AudioEngine {
     }
   }
 
-  /**
-   * Start built-in simulation preset with dynamic audio synthesis
-   */
   async startSimulation(preset) {
     await this.initAudioContext();
     this.stopMicrophone();
@@ -143,37 +124,7 @@ class AudioEngine {
     this.mode = 'simulation';
     this.isRunning = true;
 
-    // Create synthetic oscillator and harmonics to feed analyser
-    const osc = this.audioContext.createOscillator();
-    const gain = this.audioContext.createGain();
-
-    if (preset.id === 'elevenlabs_cxo') {
-      // Cloned speech: slightly rigid frequency with vocoder jitter
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(145, this.audioContext.currentTime);
-      gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
-    } else if (preset.id === 'indic_hindi_clone') {
-      // Indic voice clone: dual harmonics with high frequency artifacts
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(180, this.audioContext.currentTime);
-      gain.gain.setValueAtTime(0.15, this.audioContext.currentTime);
-    } else if (preset.id === 'gsm_noisy_call') {
-      // 2G GSM cellular: filtered bandwidth with natural human pitch
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(120, this.audioContext.currentTime);
-      gain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
-    } else {
-      // Genuine Executive: natural sine/harmonic blend
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(115, this.audioContext.currentTime);
-      gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
-    }
-
-    // Connect to analyser for live waveform visualization (do not connect to destination to avoid loud buzz)
-    osc.connect(gain);
-    gain.connect(this.analyser);
-    osc.start();
-
+    const { osc, gain } = createSimulationSynth(this.audioContext, this.analyser, preset);
     this.simOscillator = osc;
     this.simGain = gain;
   }

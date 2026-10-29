@@ -15,13 +15,11 @@ export function useFileUploadAnalysis() {
     if (!file) return;
     setFileError(null);
 
-    // Validate size
     if (file.size > MAX_FILE_SIZE) {
       setFileError('File exceeds maximum limit of 25MB. Please choose a smaller recording.');
       return;
     }
 
-    // Validate type
     const isAudio = file.type?.startsWith('audio/') || /\.(wav|mp3|webm|ogg|m4a|flac)$/i.test(file.name);
     if (!isAudio) {
       setFileError('Unsupported file format. Please upload a WAV, MP3, or WebM audio file.');
@@ -39,6 +37,7 @@ export function useFileUploadAnalysis() {
 
       const formattedResult = {
         name: file.name,
+        analysisId: backendResult.analysis_id,
         duration: `${backendResult.metrics?.duration_seconds || '0.0'}s`,
         size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
         codec: `${backendResult.sample_rate || 16000}Hz PCM`,
@@ -49,11 +48,13 @@ export function useFileUploadAnalysis() {
         modelIdentifier: backendResult.model_identifier || 'voiceshield-acoustic-dsp-v1',
         disclaimer: backendResult.disclaimer,
         metrics: backendResult.metrics,
+        segments: backendResult.segments || [],
+        segmentsCount: backendResult.segments_count || 0,
+        processingTimeMs: backendResult.processing_time_ms,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setCustomFileResult(formattedResult);
     } catch {
-      // Local fallback parsing if backend service is offline
       setUploadProgress(100);
       const fallbackResult = processUploadedAudioFile(file);
       fallbackResult.offlineNotice = 'Backend analysis offline; evaluated with local browser client heuristics.';

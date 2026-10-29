@@ -104,6 +104,18 @@ export function MicrophoneIngressPanel({
             <span className="metric-pill-label">LATENCY</span>
             <span className="metric-pill-val mono-metric">{liveResult.processing_time_ms || 24}ms</span>
           </div>
+          {liveResult.metrics?.jitter_ppq !== undefined && (
+            <div className="live-metric-pill">
+              <span className="metric-pill-label">JITTER</span>
+              <span className="metric-pill-val mono-metric">{liveResult.metrics.jitter_ppq}%</span>
+            </div>
+          )}
+          {liveResult.metrics?.shimmer_apq !== undefined && (
+            <div className="live-metric-pill">
+              <span className="metric-pill-label">SHIMMER</span>
+              <span className="metric-pill-val mono-metric">{liveResult.metrics.shimmer_apq}%</span>
+            </div>
+          )}
         </div>
       )}
     </div>

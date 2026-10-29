@@ -32,19 +32,19 @@ export function FileForensicReportCard({ result }) {
       <div className="report-metrics-grid">
         <div className="report-metric-box">
           <span className="box-title">Glottal Jitter (PPQ5)</span>
-          <span className="box-val mono-metric">{result.metrics?.jitter_ppq || result.jitterPPQ || '0.74%'}</span>
+          <span className="box-val mono-metric">{result.metrics?.jitter_ppq !== undefined ? `${result.metrics.jitter_ppq}%` : '0.74%'}</span>
           <span className="box-sub">Human norm: 0.5% - 2.0%</span>
         </div>
 
         <div className="report-metric-box">
           <span className="box-title">Glottal Shimmer (APQ3)</span>
-          <span className="box-val mono-metric">{result.metrics?.shimmer_apq || result.shimmerAPQ || '2.15%'}</span>
+          <span className="box-val mono-metric">{result.metrics?.shimmer_apq !== undefined ? `${result.metrics.shimmer_apq}%` : '2.15%'}</span>
           <span className="box-sub">Human norm: 1.5% - 4.5%</span>
         </div>
 
         <div className="report-metric-box">
           <span className="box-title">Harmonic-to-Noise Ratio</span>
-          <span className="box-val mono-metric">{result.metrics?.hnr_db ? `${result.metrics.hnr_db} dB` : '18.4 dB'}</span>
+          <span className="box-val mono-metric">{result.metrics?.hnr_db !== undefined ? `${result.metrics.hnr_db} dB` : '18.4 dB'}</span>
           <span className="box-sub">Spectral harmonicity</span>
         </div>
 
@@ -54,6 +54,19 @@ export function FileForensicReportCard({ result }) {
           <span className="box-sub">Phase & synthesis trace</span>
         </div>
       </div>
+
+      {result.segments && result.segments.length > 0 && (
+        <div className="report-segments-strip">
+          <span className="segments-strip-title">Segment-Level Timeline ({result.segments.length} windows evaluated):</span>
+          <div className="segments-pills-row">
+            {result.segments.map((seg, i) => (
+              <span key={i} className={`segment-tag mono-metric ${seg.label === 'AI Clone' ? 'tag-danger' : 'tag-safe'}`}>
+                {seg.start_time_sec}s-{seg.end_time_sec}s: {seg.synthetic_probability}%
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="report-disclaimer-strip">
         <Activity size={12} className="text-dim" />
