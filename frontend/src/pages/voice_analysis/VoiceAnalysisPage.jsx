@@ -41,6 +41,7 @@ export function VoiceAnalysisPage({
         ingestMode={state.ingestMode}
         onSelectMode={state.setIngestMode}
         isStreaming={isStreaming}
+        onStopStream={onStopStream}
       />
 
       <IngestModeRenderer

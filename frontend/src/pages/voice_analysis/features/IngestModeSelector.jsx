@@ -1,35 +1,32 @@
 import React from 'react';
-import { Radio, Mic, Upload } from 'lucide-react';
+import { PhoneCall, Mic, FileAudio } from 'lucide-react';
 import './IngestModeSelector.css';
 
-export function IngestModeSelector({ ingestMode, onSelectMode }) {
-  return (
-    <section className="ingress-selector-container card" id="ingress-mode-selector-card">
-      <div className="ingress-selector-left">
-        <div className="ingress-kicker-row">
-          <span className="ingress-kicker-tag">INGRESS ARCHITECTURE</span>
-          <span className="badge badge-neutral">400ms SLIDING PCM</span>
-        </div>
-        <h2 className="ingress-selector-title">Real-Time Inbound Voice Stream Monitoring</h2>
-        <p className="ingress-selector-desc">
-          Continuously buffers incoming voice streams for live neural vocoder artifact detection and synthetic phoneme analysis.
-        </p>
-      </div>
+export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onStopStream }) {
+  const handleSelect = (mode) => {
+    if (mode === ingestMode) return;
+    if (isStreaming && onStopStream) {
+      onStopStream();
+    }
+    onSelectMode(mode);
+  };
 
-      <div className="definite-modes-group" role="tablist" aria-label="Ingress Stream Modes">
+  return (
+    <div className="ingress-mode-nav card" id="ingress-mode-nav">
+      <div className="mode-tabs-grid" role="tablist" aria-label="Audio Ingress Modes">
         <button
           id="mode-btn-preset"
           role="tab"
           aria-selected={ingestMode === 'preset'}
-          className={`definite-mode-item ${ingestMode === 'preset' ? 'active' : ''}`}
-          onClick={() => onSelectMode('preset')}
+          className={`mode-tab-item ${ingestMode === 'preset' ? 'active' : ''}`}
+          onClick={() => handleSelect('preset')}
         >
-          <div className="mode-icon-wrapper">
-            <Radio size={16} />
+          <div className="mode-tab-icon">
+            <PhoneCall size={18} />
           </div>
-          <div className="mode-text-stack">
-            <span className="mode-primary-label">Telecom Presets</span>
-            <span className="mode-sub-badge">SIP Carrier Trunk</span>
+          <div className="mode-tab-content">
+            <span className="mode-tab-title">Telecom Presets</span>
+            <span className="mode-tab-subtitle">Connect Live Call</span>
           </div>
         </button>
 
@@ -37,15 +34,15 @@ export function IngestModeSelector({ ingestMode, onSelectMode }) {
           id="mode-btn-mic"
           role="tab"
           aria-selected={ingestMode === 'mic'}
-          className={`definite-mode-item ${ingestMode === 'mic' ? 'active' : ''}`}
-          onClick={() => onSelectMode('mic')}
+          className={`mode-tab-item ${ingestMode === 'mic' ? 'active' : ''}`}
+          onClick={() => handleSelect('mic')}
         >
-          <div className="mode-icon-wrapper">
-            <Mic size={16} />
+          <div className="mode-tab-icon">
+            <Mic size={18} />
           </div>
-          <div className="mode-text-stack">
-            <span className="mode-primary-label">Live Microphone</span>
-            <span className="mode-sub-badge">16kHz Direct Stream</span>
+          <div className="mode-tab-content">
+            <span className="mode-tab-title">Live Microphone</span>
+            <span className="mode-tab-subtitle">Device Microphone</span>
           </div>
         </button>
 
@@ -53,18 +50,18 @@ export function IngestModeSelector({ ingestMode, onSelectMode }) {
           id="mode-btn-upload"
           role="tab"
           aria-selected={ingestMode === 'upload'}
-          className={`definite-mode-item ${ingestMode === 'upload' ? 'active' : ''}`}
-          onClick={() => onSelectMode('upload')}
+          className={`mode-tab-item ${ingestMode === 'upload' ? 'active' : ''}`}
+          onClick={() => handleSelect('upload')}
         >
-          <div className="mode-icon-wrapper">
-            <Upload size={16} />
+          <div className="mode-tab-icon">
+            <FileAudio size={18} />
           </div>
-          <div className="mode-text-stack">
-            <span className="mode-primary-label">Upload Recording</span>
-            <span className="mode-sub-badge">Forensic Audio File</span>
+          <div className="mode-tab-content">
+            <span className="mode-tab-title">Recording</span>
+            <span className="mode-tab-subtitle">Analyze Recording</span>
           </div>
         </button>
       </div>
-    </section>
+    </div>
   );
 }

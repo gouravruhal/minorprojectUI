@@ -8,12 +8,9 @@ export function CarrierPresetSelector({ activeCall, onSelectPreset }) {
     <div className="preset-scenarios-container card" id="preset-scenarios-dock">
       <div className="preset-scenarios-header">
         <div className="preset-kicker-row">
-          <Radio size={13} className="text-orange" />
-          <span className="preset-kicker-tag">Preset Telecom Scenarios:</span>
+          <Radio size={14} className="text-orange" />
+          <span className="preset-kicker-tag">Preset Telecom Scenarios</span>
         </div>
-        <p className="preset-scenarios-desc">
-          Select any benchmark scenario to dynamically run live AI vocoder models, risk telemetry, and logs.
-        </p>
       </div>
 
       <div className="preset-cards-grid">

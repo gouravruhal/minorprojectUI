@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, Square, Info } from 'lucide-react';
+import { Mic, Square } from 'lucide-react';
 import './MicrophoneIngress.css';
 
 export function MicrophoneIngressPanel({
@@ -13,27 +13,18 @@ export function MicrophoneIngressPanel({
   return (
     <div className="mic-section-card card animate-fade-in" id="microphone-ingress-section">
       <div className="mic-section-header">
-        <div className="mic-header-titles">
-          <div className="ingress-kicker-row">
-            <span className="ingress-kicker-tag">DIRECT AUDIO CAPTURE</span>
-            <span className="badge badge-neutral">WEB AUDIO API</span>
-          </div>
-          <h3 className="mic-section-title">Live Hardware Microphone Ingress</h3>
-          <p className="mic-section-desc">
-            Directly buffers incoming voice frames from your default audio device into the 16kHz forensic pipeline.
-          </p>
-        </div>
+        <h3 className="mic-section-title">Live Microphone Capture</h3>
 
         <div>
           {isMicActive ? (
             <span className="status-badge connected">
               <span className="sim-pulse-dot" />
-              <span>LIVE MIC STREAMING</span>
+              <span>LIVE STREAMING</span>
             </span>
           ) : (
             <span className="status-badge standby">
               <span className="standby-dot" />
-              <span>HARDWARE STANDBY</span>
+              <span>STANDBY</span>
             </span>
           )}
         </div>
@@ -42,12 +33,12 @@ export function MicrophoneIngressPanel({
       <div className={`mic-stage-box ${isMicActive ? 'recording-active' : ''}`}>
         <div className="mic-stage-left">
           <div className={`mic-ring-radar ${isMicActive ? 'recording' : ''}`}>
-            <Mic size={26} className={isMicActive ? 'text-orange' : 'text-dim'} />
+            <Mic size={24} className={isMicActive ? 'text-orange' : 'text-dim'} />
           </div>
 
           <div className="mic-meta-details">
             <h4 className="mic-state-title">
-              {isMicActive ? 'Microphone Active • Neural Analysis Engaged' : 'System Microphone Ready for Capture'}
+              {isMicActive ? 'Microphone Active • Live Stream Running' : 'Device Microphone Ready'}
             </h4>
             <div className="mic-equalizer-strip" aria-hidden="true">
               {[12, 18, 8, 22, 14, 20, 6, 16, 24, 10, 18, 14, 22, 8, 16, 12].map((height, i) => (
@@ -72,7 +63,7 @@ export function MicrophoneIngressPanel({
               onClick={() => onStartStream('mic')}
             >
               <Mic size={15} />
-              <span>Start Live Voice Capture</span>
+              <span>Start Microphone Capture</span>
             </button>
           ) : (
             <button
@@ -81,35 +72,9 @@ export function MicrophoneIngressPanel({
               onClick={onStopStream}
             >
               <Square size={15} />
-              <span>Stop Recording</span>
+              <span>Stop Capture</span>
             </button>
           )}
-        </div>
-      </div>
-
-      <div className="mic-instructions-card">
-        <Info size={16} className="text-orange" />
-        <span>
-          Speak naturally into your microphone or play synthetic speech to detect vocoder artifacts, jitter/shimmer variance, and vocal tract anomalies.
-        </span>
-      </div>
-
-      <div className="mic-specs-grid">
-        <div className="mic-spec-tile">
-          <span className="mic-spec-label">Audio Input Interface</span>
-          <span className="mic-spec-value">System Default Mic</span>
-        </div>
-        <div className="mic-spec-tile">
-          <span className="mic-spec-label">Ingress Sample Rate</span>
-          <span className="mic-spec-value">16,000 Hz Linear PCM</span>
-        </div>
-        <div className="mic-spec-tile">
-          <span className="mic-spec-label">Sliding Ring Window</span>
-          <span className="mic-spec-value">400ms Sub-Window</span>
-        </div>
-        <div className="mic-spec-tile">
-          <span className="mic-spec-label">Hardware Latency</span>
-          <span className="mic-spec-value">12ms Low-Jitter</span>
         </div>
       </div>
     </div>

@@ -22,12 +22,7 @@ export function CarrierConnectionHero({
     <div className="telephony-entrance-card animate-fade-in" id="telephony-ingress-container">
       <div className="entrance-header-row">
         <div className="entrance-label-group">
-          <h3 className="telephony-feature-heading">
-            Live Call Inspection & Number Verification
-          </h3>
-          <p className="telephony-feature-purpose">
-            Connect any phone number to securely monitor the live audio stream and detect synthetic AI voice clones in real time.
-          </p>
+          <h3 className="telephony-feature-heading">Connect Live Call</h3>
         </div>
 
         {wirelessStatus !== 'idle' && (
@@ -97,7 +92,7 @@ export function CarrierConnectionHero({
           {wirelessStatus === 'processing' && (
             <button className="btn-secondary connecting-btn" onClick={onCancelConnecting}>
               <RotateCcw size={13} className="spin-fast" />
-              <span>Processing Call...</span>
+              <span>Connecting...</span>
             </button>
           )}
 
@@ -115,7 +110,7 @@ export function CarrierConnectionHero({
               onClick={onDisconnectDevice}
             >
               <PhoneOff size={14} />
-              <span>Disconnect Device</span>
+              <span>Disconnect</span>
             </button>
           )}
         </div>
