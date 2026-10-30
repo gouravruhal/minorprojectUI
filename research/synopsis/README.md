@@ -11,3 +11,4 @@ Generative AI voice synthesis technologies (such as ElevenLabs, XTTS-v2, and mod
 2. Establish physical vocal-tract and glottal micro-perturbation metrics (Jitter PPQ5, Shimmer APQ3) resilient against acoustic mimicry.
 3. Overcome compression bottlenecks of Indian mobile networks (VoLTE AMR-WB, GSM-FR).
 4. Build a modular multi-stream forensic pipeline combining acoustic DSP with machine learning.
+

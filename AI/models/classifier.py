@@ -95,3 +95,4 @@ class AcousticForensicClassifier:
         self.clf = data["clf"]
         self.is_fitted = data["is_fitted"]
         return self
+

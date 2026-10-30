@@ -28,3 +28,4 @@ def cleanup_temp_dir():
         for f in os.listdir(TEMP_UPLOAD_DIR):
             p = os.path.join(TEMP_UPLOAD_DIR, f)
             remove_temp_file(p)
+

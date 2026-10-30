@@ -15,22 +15,6 @@ export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onSt
     <div className="ingress-mode-nav card" id="ingress-mode-nav">
       <div className="mode-tabs-grid" role="tablist" aria-label="Audio Ingress Modes">
         <button
-          id="mode-btn-preset"
-          role="tab"
-          aria-selected={ingestMode === 'preset'}
-          className={`mode-tab-item ${ingestMode === 'preset' ? 'active' : ''}`}
-          onClick={() => handleSelect('preset')}
-        >
-          <div className="mode-tab-icon">
-            <PhoneCall size={18} />
-          </div>
-          <div className="mode-tab-content">
-            <span className="mode-tab-title">Telecom Live Analysis</span>
-            <span className="mode-tab-subtitle">Provider or Cellular Bridge</span>
-          </div>
-        </button>
-
-        <button
           id="mode-btn-mic"
           role="tab"
           aria-selected={ingestMode === 'mic'}
@@ -59,6 +43,22 @@ export function IngestModeSelector({ ingestMode, onSelectMode, isStreaming, onSt
           <div className="mode-tab-content">
             <span className="mode-tab-title">Recorded Audio Analysis</span>
             <span className="mode-tab-subtitle">WAV, MP3, WebM Upload</span>
+          </div>
+        </button>
+
+        <button
+          id="mode-btn-preset"
+          role="tab"
+          aria-selected={ingestMode === 'preset'}
+          className={`mode-tab-item ${ingestMode === 'preset' ? 'active' : ''}`}
+          onClick={() => handleSelect('preset')}
+        >
+          <div className="mode-tab-icon">
+            <PhoneCall size={18} />
+          </div>
+          <div className="mode-tab-content">
+            <span className="mode-tab-title">Telecom Preset</span>
+            <span className="mode-tab-subtitle">Provider or Cellular Bridge</span>
           </div>
         </button>
       </div>

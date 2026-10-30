@@ -11,3 +11,4 @@ Linear filterbanks (60 filters, 0–8000 Hz) preserve high-frequency information
 
 ## 3. Decision Logic & Fusion
 Acoustic feature vectors combining Jitter, Shimmer, HNR, Spectral Centroid, Rolloff, and LFCCs are classified by an ensemble model calibrated with physiological bounds to output calibrated probabilities and Inconclusive fallbacks.
+

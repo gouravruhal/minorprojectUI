@@ -29,3 +29,4 @@ async def health_check():
         "database": db_status,
         "model": model_status
     }
+

@@ -46,3 +46,4 @@ class SessionService:
                 repository.update_session_status(session_id, "idle")
 
 session_service = SessionService()
+

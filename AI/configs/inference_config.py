@@ -27,3 +27,4 @@ class AudioPipelineConfig:
     energy_threshold: float = ENERGY_THRESHOLD_RMS
     synthetic_threshold: float = SYNTHETIC_THRESHOLD
     human_threshold: float = HUMAN_THRESHOLD
+

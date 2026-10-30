@@ -41,3 +41,4 @@ app.include_router(voice_router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.app.main:app", host=BACKEND_HOST, port=BACKEND_PORT, reload=True)
+

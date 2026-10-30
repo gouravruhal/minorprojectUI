@@ -60,3 +60,4 @@ def analyze_streaming_chunk(
     report = detector.analyze_waveform(samples, sr=sr)
     report["session_id"] = session_id
     return report
+

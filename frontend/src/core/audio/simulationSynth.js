@@ -29,3 +29,4 @@ export function createSimulationSynth(audioContext, analyser, preset) {
 
   return { osc, gain };
 }
+

@@ -129,3 +129,4 @@ def extract_feature_vector(samples: np.ndarray, sr: int = 16000) -> np.ndarray:
     ], dtype=np.float32)
 
     return np.concatenate([base_features, lfcc.astype(np.float32)])
+

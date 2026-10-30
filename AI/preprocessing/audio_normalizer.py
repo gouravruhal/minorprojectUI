@@ -60,3 +60,4 @@ def normalize_rms(samples: np.ndarray, target_rms: float = 0.1) -> np.ndarray:
 def is_speech_present(samples: np.ndarray, threshold: float = ENERGY_THRESHOLD_RMS) -> bool:
     """Determines whether audio segment contains sufficient acoustic energy for analysis."""
     return compute_rms(samples) >= threshold
+

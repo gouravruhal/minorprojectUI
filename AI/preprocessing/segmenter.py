@@ -35,3 +35,4 @@ def segment_audio(
         start_sec = round(float(remnant_start) / float(sr), 2)
         end_sec = round(float(total_len) / float(sr), 2)
         yield samples[remnant_start:total_len], start_sec, end_sec
+

@@ -66,3 +66,4 @@ class HealthResponse(BaseModel):
     version: str
     database: str
     model: str
+

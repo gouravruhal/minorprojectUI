@@ -12,3 +12,4 @@ Modern speech synthesis relies on two decoupled components:
 ## 3. ASV & Prior Detection Architectures
 - **ASVspoof Challenges:** Benchmarked LFCC, CQCC, and RawNet2. While effective on clean audio, baseline models degrade significantly under low-bitrate telephony compression.
 - **VoiceShield Advantage:** Extracts biological glottal dynamics and wideband spectral cues to remain robust across compression manifolds.
+

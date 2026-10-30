@@ -6,3 +6,4 @@
 4. **LFCC Feature Engineering:** Sahidullah, M. et al. "A comparison of features for synthetic speech detection." *Interspeech 2015*.
 5. **Silero VAD:** Silero Team. "Silero VAD: Pre-trained Enterprise-Grade Voice Activity Detector." *GitHub Repository, 2021*.
 6. **Vocal Biomechanics:** Titze, I. R. "Principles of Voice Production." *National Center for Voice and Speech, 2000*.
+

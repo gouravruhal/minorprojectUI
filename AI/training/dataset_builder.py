@@ -60,3 +60,4 @@ def generate_benchmark_dataset(n_samples: int = 1200, seed: int = 42):
     # Split into 80% train, 20% held-out test
     split = int(0.80 * len(X))
     return X[:split], y[:split], X[split:], y[split:]
+

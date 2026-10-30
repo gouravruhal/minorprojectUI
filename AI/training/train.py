@@ -39,3 +39,4 @@ def run_training():
 if __name__ == "__main__":
     import numpy as np
     run_training()
+

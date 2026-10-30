@@ -50,7 +50,7 @@ cd frontend && npm install && cd ..
 ### 3. Run Backend API Server
 ```bash
 npm run backend
-# or: uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+# or: python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 ### 4. Run Frontend Development Server

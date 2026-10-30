@@ -11,7 +11,7 @@ import { connectTelecom } from '../../../core/api/voiceAnalysisApi';
 export function useVoiceAnalysisState({
   activeCall, isStreaming: _isStreaming, onStopStream, onUpdateActiveCall, onResetCallSession
 }) {
-  const [ingestMode, setIngestMode] = useState('preset');
+  const [ingestMode, setIngestMode] = useState('mic');
   const fileInputRef = useRef(null);
   const recorder = useLiveCallRecorder();
   const backendStream = useBackendStream();
