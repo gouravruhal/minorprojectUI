@@ -1,0 +1,106 @@
+/* VoiceShield AI - Flowing Dataflow Animations & Keyframes */
+
+/* Moving Packet along Inter-Stage Arrow */
+.arrow-line.flow-active {
+  background: linear-gradient(90deg, #e2e8f0, var(--accent-orange, #ea580c), #e2e8f0);
+  background-size: 200% 100%;
+  animation: wireGlow 1.5s infinite linear;
+}
+
+.moving-packet {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--pkt-color, #ea580c);
+  box-shadow: 0 0 6px var(--pkt-color, #ea580c);
+  animation: travelPacket 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes travelPacket {
+  0% { left: 0%; opacity: 0; transform: scale(0.6); }
+  20% { opacity: 1; transform: scale(1.1); }
+  80% { opacity: 1; transform: scale(1.1); }
+  100% { left: 100%; opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes wireGlow {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Active Node Packet Tracer */
+.packet-tracer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  border-radius: 0 0 8px 8px;
+  animation: tracerPulse 2s infinite ease-in-out;
+}
+
+@keyframes tracerPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.4); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+/* Active Node Subtle Beacon */
+.node-active .node-indicator {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent, #ea580c);
+  box-shadow: 0 0 6px var(--accent, #ea580c);
+  animation: beaconPulse 1.6s infinite ease-in-out;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 10px var(--accent, #ea580c); }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* Vertical Wire Flow */
+.node-connector-v.active-wire {
+  background: var(--accent, #ea580c);
+  box-shadow: 0 0 4px var(--accent, #ea580c);
+  animation: wirePulse 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes wirePulse {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* Slide Section Fade In */
+.slide-section.active {
+  animation: slideFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Soft Highlight Boxes */
+.flow-box.highlight-orange {
+  border-left: 3px solid var(--accent-orange);
+  background: var(--orange-soft);
+}
+
+.flow-box.highlight-green {
+  border-left: 3px solid var(--accent-green);
+  background: var(--green-soft);
+}

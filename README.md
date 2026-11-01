@@ -134,6 +134,14 @@ python scripts/run_all_tests.py
 ```
 
 ### Verification Results
-* **179/179 Source Files** conform strictly to $\le 200$ lines.
-* **47/47 Unit & Integration Tests** pass with 0 errors.
+* **215/215 Source Files** conform strictly to $\le 200$ lines.
+* **49/49 Unit & Integration Tests** pass with 0 errors.
 * **Frontend Vite Build**: Passes with 0 errors and 0 warnings.
+
+---
+
+## 📊 Interactive Architecture & Dataflow Slides
+
+To explore the animated system architecture, filterable dataflow pipeline, and comparative prediction scenarios:
+* Open `architecture_slides/index.html` in any web browser.
+* Features filterable subsystem stages, live glowing packet flow animations, and real-time comparative metrics across human, AI vocoder, and phone loudspeaker replay spoofing.

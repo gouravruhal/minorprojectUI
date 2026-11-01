@@ -41,7 +41,7 @@ def check_directory(base_dir: str):
 
 def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    target_dirs = ["frontend/src", "backend", "AI", "scripts"]
+    target_dirs = ["frontend/src", "backend", "AI", "scripts", "architecture_slides"]
 
     print("=" * 60)
     print("VoiceShield AI: Source File Line Count Verification (Max 200 lines)")
