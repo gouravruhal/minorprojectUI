@@ -40,6 +40,10 @@ def analyze_audio_file(
         "disclaimer": report["disclaimer"],
         "segments_count": report["segments_count"],
         "segments": report["segments"],
+        "timeline_5s_intervals": report.get("timeline_5s_intervals", []),
+        "comparison_metrics": report.get("comparison_metrics", {}),
+        "temporal_dynamics": report.get("temporal_dynamics", {}),
+        "llm_risk_explanation": report.get("llm_risk_explanation", {}),
         "metrics": report["metrics"],
         "processing_time_ms": report["processing_time_ms"],
         "error_message": report.get("reason")

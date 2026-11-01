@@ -27,7 +27,7 @@
 }
 .laser-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ea580c, #f97316, #fed7aa, #ea580c);
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-yellow), var(--accent-blue));
   background-size: 200% 100%;
   animation: laserStreamer 0.44s ease-out forwards;
 }
@@ -37,8 +37,8 @@
   right: 0;
   width: 120px;
   height: 100%;
-  background: radial-gradient(circle, rgba(254, 215, 170, 0.9) 0%, rgba(234, 88, 12, 0) 70%);
-  filter: drop-shadow(0 0 6px #ea580c);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.9) 0%, rgba(16, 185, 129, 0) 70%);
+  filter: drop-shadow(0 0 6px var(--accent-blue));
 }
 @keyframes laserStreamer {
   0% { width: 0%; opacity: 1; }

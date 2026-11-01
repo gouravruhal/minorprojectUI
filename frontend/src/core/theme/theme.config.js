@@ -1,129 +1,90 @@
 /**
  * ==============================================================================
- * CENTRAL THEME CONFIGURATION & CONTROL BUS (VoiceShield AI)
+ * CENTRAL THEME CONFIGURATION & CONTROL BUS (VoiceShield AI) (<= 200 lines)
  * ==============================================================================
- * This is the SINGLE SOURCE OF TRUTH for all UI colors, theme modes, and tokens.
- * To make sudden changes to the UI across all components, canvas visualizers,
- * and CSS variables, simply update the values in this file!
+ * Single source of truth for UI colors, modes, and claymorphic tokens.
+ * Premium Palette: Cobalt/Azure Blue, Emerald Green, and Cyber Yellow.
  * ==============================================================================
  */
 
 export const THEME_PALETTES = {
-  // Primary Palette: Very Dark Brown, Zinnwaldite, Karaki, Persimmon, Light Peach
-  karaki_persimmon: {
-    id: 'karaki_persimmon',
-    name: 'Karaki & Persimmon (Default)',
-    colors: {
-      darkBrown: '#0C0A09',   // Very Dark Brown
-      zinnwaldite: '#1C1917', // Zinnwaldite Brown
-      karaki: '#451A03',      // Karaki
-      persimmon: '#EA580C',   // Persimmon
-      lightPeach: '#FED7AA'   // Light Peach
-    },
+  cyber_triad: {
+    id: 'cyber_triad',
+    name: 'Cyber Triad: Blue, Green & Gold',
     dark: {
-      // Backgrounds
-      bgApp: '#0C0A09',
-      bgSurface: 'rgba(28, 25, 23, 0.88)',
-      bgSurfaceSolid: '#1C1917',
-      bgElevated: 'rgba(69, 26, 3, 0.35)',
-      bgInset: '#0C0A09',
+      bgApp: '#0b0f17',
+      bgSurface: '#131b2e',
+      bgSurfaceSolid: '#131b2e',
+      bgElevated: '#1a243d',
+      bgInset: '#0c1322',
 
-      // Borders
-      borderSubtle: 'rgba(254, 215, 170, 0.1)',
-      borderKaraki: 'rgba(69, 26, 3, 0.8)',
-      borderHover: 'rgba(234, 88, 12, 0.45)',
-      borderActive: '#EA580C',
+      borderSubtle: 'rgba(56, 189, 248, 0.16)',
+      borderHover: '#38bdf8',
+      borderActive: '#34d399',
 
-      // Typography
-      textMain: '#FED7AA',
-      textDim: '#E7E5E4',
-      textMuted: '#A8A29E',
-      textInverse: '#0C0A09',
+      textMain: '#f8fafc',
+      textDim: '#cbd5e1',
+      textMuted: '#94a3b8',
+      textInverse: '#0b0f17',
 
-      // Accents & Actions
-      accentPrimary: '#EA580C',
-      accentPrimaryHover: '#c2410c',
-      accentPrimarySoft: 'rgba(234, 88, 12, 0.15)',
-      accentPeach: '#FED7AA',
-      accentKaraki: '#451A03',
+      accentBlue: '#38bdf8',
+      accentGreen: '#34d399',
+      accentYellow: '#facc15',
+      accentPrimary: '#0284c7',
+      accentPrimaryHover: '#0369a1',
 
-      // Status Colors
-      safeGreen: '#10B981',
-      safeGreenSoft: 'rgba(16, 185, 129, 0.12)',
-      safeGreenBorder: 'rgba(16, 185, 129, 0.3)',
+      safeGreen: '#10b981',
+      safeGreenSoft: 'rgba(16, 185, 129, 0.16)',
+      warnAmber: '#facc15',
+      warnAmberSoft: 'rgba(250, 204, 21, 0.16)',
+      dangerRed: '#ef4444',
+      dangerRedSoft: 'rgba(239, 68, 68, 0.16)',
 
-      warnAmber: '#EA580C',
-      warnAmberSoft: 'rgba(234, 88, 12, 0.12)',
-      warnAmberBorder: 'rgba(234, 88, 12, 0.3)',
-
-      dangerRed: '#EF4444',
-      dangerRedSoft: 'rgba(239, 68, 68, 0.12)',
-      dangerRedBorder: 'rgba(239, 68, 68, 0.35)',
-
-      // Hardware Canvas Visualizer Colors
-      waveformBaseline: 'rgba(168, 162, 158, 0.25)',
-      waveformStroke: '#FED7AA',
-      waveformAlert: '#EA580C',
-      waveformShadow: 'rgba(234, 88, 12, 0.85)',
-      spectrumPrimary: '#EA580C',
-      spectrumSecondary: '#FED7AA',
-      spectrumAlert: '#EF4444'
+      shadowClay: '10px 10px 26px rgba(0, 0, 0, 0.6), -8px -8px 24px rgba(255, 255, 255, 0.03), inset 1px 1px 2px rgba(255, 255, 255, 0.08)',
+      shadowClayInset: 'inset 4px 4px 10px rgba(0, 0, 0, 0.65), inset -3px -3px 8px rgba(255, 255, 255, 0.03)',
+      shadowClayBtn: '5px 5px 14px rgba(2, 132, 199, 0.45), inset 1px 1px 2px rgba(255, 255, 255, 0.3)',
+      clayGradient: 'linear-gradient(135deg, #0284c7 0%, #059669 100%)'
     },
     light: {
-      // Backgrounds
-      bgApp: '#FFF7ED',
-      bgSurface: 'rgba(255, 255, 255, 0.92)',
-      bgSurfaceSolid: '#FFFFFF',
-      bgElevated: '#FED7AA',
-      bgInset: '#FDBA74',
+      bgApp: '#f0f3f8',
+      bgSurface: '#ffffff',
+      bgSurfaceSolid: '#ffffff',
+      bgElevated: '#f8fafc',
+      bgInset: '#e8edf5',
 
-      // Borders
-      borderSubtle: 'rgba(69, 26, 3, 0.12)',
-      borderKaraki: 'rgba(69, 26, 3, 0.3)',
-      borderHover: 'rgba(234, 88, 12, 0.5)',
-      borderActive: '#EA580C',
+      borderSubtle: 'rgba(166, 175, 195, 0.45)',
+      borderHover: '#0284c7',
+      borderActive: '#059669',
 
-      // Typography
-      textMain: '#0C0A09',
-      textDim: '#451A03',
-      textMuted: '#78716C',
-      textInverse: '#FFF7ED',
+      textMain: '#0f172a',
+      textDim: '#334155',
+      textMuted: '#64748b',
+      textInverse: '#ffffff',
 
-      // Accents & Actions
-      accentPrimary: '#EA580C',
-      accentPrimaryHover: '#c2410c',
-      accentPrimarySoft: 'rgba(234, 88, 12, 0.1)',
-      accentPeach: '#EA580C',
-      accentKaraki: '#451A03',
+      accentBlue: '#0284c7',
+      accentGreen: '#059669',
+      accentYellow: '#d97706',
+      accentPrimary: '#0284c7',
+      accentPrimaryHover: '#0369a1',
 
-      // Status Colors
-      safeGreen: '#059669',
-      safeGreenSoft: 'rgba(5, 150, 105, 0.1)',
-      safeGreenBorder: 'rgba(5, 150, 105, 0.25)',
+      safeGreen: '#10b981',
+      safeGreenSoft: 'rgba(16, 185, 129, 0.12)',
+      warnAmber: '#d97706',
+      warnAmberSoft: 'rgba(217, 119, 6, 0.12)',
+      dangerRed: '#ef4444',
+      dangerRedSoft: 'rgba(239, 68, 68, 0.12)',
 
-      warnAmber: '#EA580C',
-      warnAmberSoft: 'rgba(234, 88, 12, 0.1)',
-      warnAmberBorder: 'rgba(234, 88, 12, 0.25)',
-
-      dangerRed: '#DC2626',
-      dangerRedSoft: 'rgba(220, 38, 38, 0.1)',
-      dangerRedBorder: 'rgba(220, 38, 38, 0.25)',
-
-      // Hardware Canvas Visualizer Colors
-      waveformBaseline: 'rgba(120, 113, 108, 0.25)',
-      waveformStroke: '#EA580C',
-      waveformAlert: '#DC2626',
-      waveformShadow: 'rgba(234, 88, 12, 0.6)',
-      spectrumPrimary: '#EA580C',
-      spectrumSecondary: '#FED7AA',
-      spectrumAlert: '#DC2626'
+      shadowClay: '10px 10px 24px rgba(166, 175, 195, 0.4), -10px -10px 24px #ffffff, inset 1px 1px 2px rgba(255, 255, 255, 0.95)',
+      shadowClayInset: 'inset 4px 4px 8px rgba(166, 175, 195, 0.3), inset -4px -4px 8px #ffffff',
+      shadowClayBtn: '5px 5px 14px rgba(2, 132, 199, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.4)',
+      clayGradient: 'linear-gradient(135deg, #0284c7 0%, #059669 100%)'
     }
   }
 };
 
-/**
- * Maps JS tokens directly to CSS custom properties on :root
- */
+// Default fallback alias
+THEME_PALETTES.karaki_persimmon = THEME_PALETTES.cyber_triad;
+
 export function applyTokensToDocument(tokens) {
   const root = document.documentElement;
 
@@ -134,7 +95,6 @@ export function applyTokensToDocument(tokens) {
   root.style.setProperty('--bg-inset', tokens.bgInset);
 
   root.style.setProperty('--border-subtle', tokens.borderSubtle);
-  root.style.setProperty('--border-karaki', tokens.borderKaraki);
   root.style.setProperty('--border-hover', tokens.borderHover);
   root.style.setProperty('--border-active', tokens.borderActive);
 
@@ -143,24 +103,32 @@ export function applyTokensToDocument(tokens) {
   root.style.setProperty('--text-muted', tokens.textMuted);
   root.style.setProperty('--text-inverse', tokens.textInverse);
 
-  root.style.setProperty('--c-persimmon', tokens.accentPrimary);
-  root.style.setProperty('--accent-orange', tokens.accentPrimary);
-  root.style.setProperty('--accent-cyan', tokens.accentPrimary);
-  root.style.setProperty('--accent-orange-hover', tokens.accentPrimaryHover);
-  root.style.setProperty('--accent-orange-soft', tokens.accentPrimarySoft);
-  root.style.setProperty('--accent-peach', tokens.accentPeach);
-  root.style.setProperty('--c-light-peach', tokens.accentPeach);
-  root.style.setProperty('--c-karaki', tokens.accentKaraki);
+  // Blue, Green, Yellow Premium Triad
+  root.style.setProperty('--accent-blue', tokens.accentBlue);
+  root.style.setProperty('--accent-green', tokens.accentGreen);
+  root.style.setProperty('--accent-yellow', tokens.accentYellow);
+  root.style.setProperty('--accent-primary', tokens.accentPrimary);
+  root.style.setProperty('--accent-primary-hover', tokens.accentPrimaryHover);
 
+  // Legacy compatibility mappings
+  root.style.setProperty('--c-persimmon', tokens.accentBlue);
+  root.style.setProperty('--accent-orange', tokens.accentBlue);
+  root.style.setProperty('--accent-cyan', tokens.accentBlue);
+  root.style.setProperty('--accent-peach', tokens.accentYellow);
+  root.style.setProperty('--c-light-peach', tokens.accentGreen);
+  root.style.setProperty('--c-karaki', tokens.accentGreen);
+
+  // Status Colors
   root.style.setProperty('--safe-green', tokens.safeGreen);
   root.style.setProperty('--safe-green-soft', tokens.safeGreenSoft);
-  root.style.setProperty('--safe-green-border', tokens.safeGreenBorder);
-
   root.style.setProperty('--warn-amber', tokens.warnAmber);
   root.style.setProperty('--warn-amber-soft', tokens.warnAmberSoft);
-  root.style.setProperty('--warn-amber-border', tokens.warnAmberBorder);
-
   root.style.setProperty('--danger-red', tokens.dangerRed);
   root.style.setProperty('--danger-red-soft', tokens.dangerRedSoft);
-  root.style.setProperty('--danger-red-border', tokens.dangerRedBorder);
+
+  // Dynamic Claymorphic Tokens
+  root.style.setProperty('--shadow-clay', tokens.shadowClay);
+  root.style.setProperty('--shadow-clay-inset', tokens.shadowClayInset);
+  root.style.setProperty('--shadow-clay-btn', tokens.shadowClayBtn);
+  root.style.setProperty('--clay-gradient', tokens.clayGradient);
 }

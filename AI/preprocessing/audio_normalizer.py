@@ -26,18 +26,18 @@ def decode_audio_bytes(data: bytes) -> tuple[np.ndarray, int]:
 
 def to_mono_16k(samples: np.ndarray, sr: int) -> np.ndarray:
     """
-    Converts multi-channel audio to mono and resamples to target 16,000 Hz.
+    Converts multi-channel audio to mono and resamples to target 16,000 Hz
+    using polyphase sinc with Kaiser window to eliminate Nyquist cutoff leakage.
     """
     if samples.ndim > 1:
         samples = np.mean(samples, axis=1)
-
     samples = samples.astype(np.float32)
 
     if sr != TARGET_SAMPLE_RATE and sr > 0:
         gcd = np.gcd(sr, TARGET_SAMPLE_RATE)
         up = TARGET_SAMPLE_RATE // gcd
         down = sr // gcd
-        samples = resample_poly(samples, up, down).astype(np.float32)
+        samples = resample_poly(samples, up, down, window=("kaiser", 5.0)).astype(np.float32)
 
     return samples
 

@@ -1,98 +1,108 @@
 """
-AI Voice Detection Model: Acoustic Forensic Classifier.
-Combines trained ensemble machine learning with physical vocal biomechanics.
+AI Voice Detection Model: Multi-Resolution Acoustic Ensemble Classifier.
+Supports dual-head evaluation for 19-dim segments and 28-dim 10-30s temporal recordings.
 """
 import os
 import joblib
 import numpy as np
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier, ExtraTreesClassifier
 
 class AcousticForensicClassifier:
-    """
-    Forensic voice authenticity classifier.
-    Combines statistical gradient-boosted trees over LFCC features with
-    physiological vocal fold perturbation rules (glottal jitter and shimmer).
-    """
+    """Production Dual-Head Ensemble Classifier fusing ML decision trees with glottal biomechanics."""
 
     def __init__(self):
-        self.clf = GradientBoostingClassifier(
-            n_estimators=100,
-            learning_rate=0.1,
-            max_depth=4,
-            random_state=42
-        )
+        # Head 1: Segment & 5-Second Interval Classifier (19 dimensions)
+        self.seg_gb = GradientBoostingClassifier(n_estimators=100, learning_rate=0.08, max_depth=4, random_state=42)
+        self.seg_et = ExtraTreesClassifier(n_estimators=80, max_depth=6, random_state=42)
+        # Head 2: Global 10-30s Temporal Dynamics Classifier (28 dimensions)
+        self.temp_gb = GradientBoostingClassifier(n_estimators=120, learning_rate=0.07, max_depth=5, random_state=42)
+        self.temp_et = ExtraTreesClassifier(n_estimators=100, max_depth=7, random_state=42)
         self.is_fitted = False
 
+    def fit_dual(self, X_seg: np.ndarray, y_seg: np.ndarray, X_temp: np.ndarray, y_temp: np.ndarray):
+        """Trains both segment (19-dim) and temporal (28-dim) heads."""
+        self.seg_gb.fit(X_seg, y_seg)
+        self.seg_et.fit(X_seg, y_seg)
+        self.temp_gb.fit(X_temp, y_temp)
+        self.temp_et.fit(X_temp, y_temp)
+        self.is_fitted = True
+        return self
+
     def fit(self, X: np.ndarray, y: np.ndarray):
-        """Train the classifier on extracted feature matrices."""
-        self.clf.fit(X, y)
+        """Single-head fitting for backwards compatibility."""
+        if X.shape[1] > 20:
+            self.temp_gb.fit(X, y)
+            self.temp_et.fit(X, y)
+        else:
+            self.seg_gb.fit(X, y)
+            self.seg_et.fit(X, y)
         self.is_fitted = True
         return self
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
-        """Predict class probabilities: [P(Human), P(Synthetic)]."""
+        """Computes ensemble probabilities [P(Human), P(Synthetic)]."""
         if not self.is_fitted:
-            # Fallback heuristic prior if model weights not yet trained
             return self._heuristic_proba(X)
-        return self.clf.predict_proba(X)
+        if X.shape[1] > 20:
+            p_gb = self.temp_gb.predict_proba(X)
+            p_et = self.temp_et.predict_proba(X)
+        else:
+            p_gb = self.seg_gb.predict_proba(X)
+            p_et = self.seg_et.predict_proba(X)
+        return 0.60 * p_gb + 0.40 * p_et
 
     def predict_synthetic_score(self, feature_vector: np.ndarray) -> float:
-        """
-        Calculates a calibrated synthetic probability score (0 to 100%)
-        combining model prediction with glottal biomechanical physics.
-        """
+        """Calculates calibrated synthetic probability (0-100%) fused with vocal tract physics."""
         f = feature_vector
-        # Features: [0: f0, 1: jitter, 2: shimmer, 3: hnr, 4: centroid, 5: rolloff, 6: hf_ratio, 7+: lfcc]
-        jitter = float(f[1])
-        shimmer = float(f[2])
-        hnr = float(f[3])
-        hf_ratio = float(f[6])
+        is_long = len(f) > 20
+        jitter = float(f[2]) if is_long else float(f[1])
+        shimmer = float(f[5]) if is_long else float(f[2])
+        hnr = float(f[7]) if is_long else float(f[3])
+        hf_ratio = float(f[11]) if is_long else float(f[6])
 
-        # 1. Base ML model probability
         if self.is_fitted:
-            prob_ml = float(self.clf.predict_proba(f.reshape(1, -1))[0][1]) * 100.0
+            vec = f.reshape(1, -1)
+            prob_ml = float(self.predict_proba(vec)[0][1]) * 100.0
         else:
             prob_ml = 50.0
 
-        # 2. Physics-based vocal fold perturbation adjustment
-        physics_adjustment = 0.0
+        # Physical vocal fold biomechanics adjustments (soft calibration without negative penalization)
+        adj = 0.0
         if jitter < 0.25:
-            physics_adjustment += 25.0
-        elif jitter > 0.50 and jitter < 2.0:
-            physics_adjustment -= 20.0
-
+            adj += 20.0
         if shimmer < 0.90:
-            physics_adjustment += 20.0
-        elif shimmer > 1.5 and shimmer < 4.5:
-            physics_adjustment -= 15.0
+            adj += 15.0
+        if hnr > 27.0:
+            adj += 12.0
+        if hf_ratio > 0.26:
+            adj += 15.0
 
-        if hnr > 28.0:
-            physics_adjustment += 10.0
-
-        if hf_ratio > 0.28:
-            physics_adjustment += 15.0
-
-        # Weighted combination: 60% ML tree, 40% Glottal physics
-        final_score = 0.60 * prob_ml + 0.40 * (50.0 + physics_adjustment)
-        return float(np.clip(final_score, 4.0, 96.0))
+        # Weighted combination: 85% ML Ensemble probability + 15% physical consistency bounds
+        score = 0.85 * prob_ml + 0.15 * (50.0 + adj)
+        return float(np.clip(score, 4.0, 96.0))
 
     def _heuristic_proba(self, X: np.ndarray) -> np.ndarray:
         probas = []
         for row in X:
-            jitter, shimmer = row[1], row[2]
-            p_synth = 0.85 if (jitter < 0.3 or shimmer < 1.0) else 0.15
+            j = row[2] if len(row) >= 28 else row[1]
+            s = row[5] if len(row) >= 28 else row[2]
+            p_synth = 0.88 if (j < 0.3 or s < 1.0) else 0.12
             probas.append([1.0 - p_synth, p_synth])
         return np.array(probas)
 
     def save(self, filepath: str):
-        """Persist model checkpoint to disk."""
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        joblib.dump({"clf": self.clf, "is_fitted": self.is_fitted}, filepath)
+        joblib.dump({
+            "seg_gb": self.seg_gb, "seg_et": self.seg_et,
+            "temp_gb": self.temp_gb, "temp_et": self.temp_et,
+            "is_fitted": self.is_fitted
+        }, filepath)
 
     def load(self, filepath: str):
-        """Load model checkpoint from disk."""
         data = joblib.load(filepath)
-        self.clf = data["clf"]
-        self.is_fitted = data["is_fitted"]
+        self.seg_gb = data.get("seg_gb", data.get("gb_clf"))
+        self.seg_et = data.get("seg_et", data.get("et_clf"))
+        self.temp_gb = data.get("temp_gb", data.get("gb_clf"))
+        self.temp_et = data.get("temp_et", data.get("et_clf"))
+        self.is_fitted = data.get("is_fitted", True)
         return self
-

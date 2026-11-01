@@ -19,6 +19,7 @@ html, body {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
@@ -47,9 +48,10 @@ html, body {
 }
 
 /* Utility Color Classes */
-.text-cyan, .text-orange { color: var(--c-persimmon) !important; }
-.text-peach { color: var(--c-light-peach) !important; }
-.text-karaki { color: var(--c-karaki) !important; }
+.text-cyan, .text-orange, .text-blue { color: var(--accent-blue) !important; }
+.text-green, .text-peach { color: var(--accent-green) !important; }
+.text-yellow, .text-amber { color: var(--accent-yellow) !important; }
+.text-karaki { color: var(--accent-green) !important; }
 .text-dim { color: var(--text-dim) !important; }
 .text-muted { color: var(--text-muted) !important; }
 .text-safe { color: var(--safe-green) !important; }

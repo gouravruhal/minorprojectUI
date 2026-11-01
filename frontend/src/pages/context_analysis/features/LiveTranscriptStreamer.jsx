@@ -1,13 +1,17 @@
 import React from 'react';
-import { MessageSquare, Tag, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, Tag, AlertTriangle, CheckCircle2, Bot, Sparkles } from 'lucide-react';
 
-export function LiveTranscriptStreamer({ activeCall, isStreaming }) {
-  const highlightKeywords = (text, keywords) => {
-    if (!keywords || keywords.length === 0) return text;
-    const regex = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+export function LiveTranscriptStreamer({ recording, activeCall, isStreaming, isRegenerating }) {
+  const current = recording || activeCall || {};
+  const transcriptText = current.transcript || current.transcriptSnippet || 'Awaiting incoming telephonic stream...';
+  const keywords = current.keywords || [];
+
+  const highlightKeywords = (text, kws) => {
+    if (!kws || kws.length === 0) return text;
+    const regex = new RegExp(`(${kws.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
     const parts = text.split(regex);
     return parts.map((part, index) => {
-      const isMatch = keywords.some(k => k.toLowerCase() === part.toLowerCase());
+      const isMatch = kws.some((k) => k.toLowerCase() === part.toLowerCase());
       if (isMatch) {
         return (
           <mark key={index} className="threat-keyword-highlight">
@@ -20,49 +24,59 @@ export function LiveTranscriptStreamer({ activeCall, isStreaming }) {
   };
 
   return (
-    <section className="transcript-panel card">
+    <section className="transcript-panel card clay-card">
       <div className="panel-header-row">
         <div className="panel-title-group">
-          <MessageSquare size={18} className="text-orange" />
-          <h3 className="panel-heading">Live Telephonic Transcript Stream</h3>
+          <MessageSquare size={18} className="text-accent" />
+          <h3 className="panel-heading">Voice-to-Text Speech Transcript</h3>
         </div>
         <span className="mono-metric stream-status-tag">
-          {isStreaming ? '● LISTENING (LATENCY <280ms)' : 'STANDBY'}
+          {isRegenerating ? (
+            <span className="text-warning animate-pulse"><Sparkles size={12} /> TRANSCRIBING...</span>
+          ) : isStreaming ? (
+            <span className="text-danger">● LISTENING (LATENCY &lt;280ms)</span>
+          ) : (
+            <span className="text-dim">STANDBY &bull; PROCESSED</span>
+          )}
         </span>
       </div>
 
       <div className="transcript-box">
         <div className="transcript-meta-bar">
           <span className="caller-id-pill">
-            Speaker: <strong>{activeCall.callerName}</strong> ({activeCall.network})
+            Speaker: <strong>{current.callerName || 'Unknown Speaker'}</strong> ({current.network || 'Standard PSTN'})
           </span>
-          <span className="timestamp-pill">Live Capture</span>
+          <span className="timestamp-pill">
+            {current.intentCategory ? (
+              <span className="intent-badge-pill"><Bot size={12} /> {current.intentCategory}</span>
+            ) : 'Live Capture'}
+          </span>
         </div>
 
-        <div className="transcript-bubble">
+        <div className={`transcript-bubble ${isRegenerating ? 'shimmer-loading' : ''}`}>
           <p className="transcript-text">
-            "{highlightKeywords(activeCall.transcriptSnippet, activeCall.keywords)}"
+            "{highlightKeywords(transcriptText, keywords)}"
           </p>
         </div>
       </div>
 
       <div className="threat-entities-section">
         <h4 className="entities-title">
-          <Tag size={14} className="text-orange" />
+          <Tag size={14} className="text-accent" />
           <span>Extracted Threat Intent & Red-Flag Entities</span>
         </h4>
         <div className="entity-tags-list">
-          {activeCall.keywords && activeCall.keywords.length > 0 ? (
-            activeCall.keywords.map((kw, idx) => (
-              <span key={idx} className="entity-tag danger">
-                <AlertTriangle size={12} />
+          {keywords && keywords.length > 0 ? (
+            keywords.map((kw, idx) => (
+              <span key={idx} className={`entity-tag ${current.isSynthetic ? 'danger' : 'safe'}`}>
+                {current.isSynthetic ? <AlertTriangle size={12} /> : <CheckCircle2 size={12} />}
                 <span>{kw}</span>
               </span>
             ))
           ) : (
             <span className="entity-tag safe">
               <CheckCircle2 size={12} />
-              <span>No high-risk keywords detected</span>
+              <span>No coercive or malicious entities detected</span>
             </span>
           )}
         </div>
@@ -70,3 +84,5 @@ export function LiveTranscriptStreamer({ activeCall, isStreaming }) {
     </section>
   );
 }
+
+export default LiveTranscriptStreamer;

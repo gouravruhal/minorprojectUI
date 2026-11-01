@@ -1,103 +1,89 @@
-import React from 'react';
-import { IngestModeSelector } from './features/IngestModeSelector';
-import { IngestModeRenderer } from './features/IngestModeRenderer';
-import { RealtimeVerdictBanner } from './features/RealtimeVerdictBanner';
-import { LiveWaveformSection } from './features/LiveWaveformSection';
-import { InspectionTelemetrySplit } from './features/InspectionTelemetrySplit';
-import { useVoiceAnalysisState } from './features/useVoiceAnalysisState';
-import './features/BannersAndModals.css';
+import React, { useRef, useEffect } from 'react';
+import { useFileUploadAnalysis } from './features/useFileUploadAnalysis';
+import { AudioForensicIngress } from './features/AudioForensicIngress';
+import { AggregatedVerdictBanner } from './features/AggregatedVerdictBanner';
+import { MultiBlockTimeline } from './features/MultiBlockTimeline';
+import { ForensicPipelineTracker } from './features/ForensicPipelineTracker';
+import { ForensicComparisonGraph } from './features/ForensicComparisonGraph';
+import { ForensicLLMTimelineLogs } from './features/ForensicLLMTimelineLogs';
+import './features/ForensicAnalysisView.css';
 import './VoiceAnalysisPage.css';
 
-export function VoiceAnalysisPage({
-  activeCall,
-  isStreaming,
-  streamMode,
-  currentRiskScore,
-  onSelectPreset,
-  onStartStream,
-  onStopStream,
-  onUpdateActiveCall,
-  onResetCallSession
-}) {
-  const state = useVoiceAnalysisState({
-    activeCall,
-    isStreaming,
-    currentRiskScore,
-    onSelectPreset,
-    onStartStream,
-    onStopStream,
-    onUpdateActiveCall,
-    onResetCallSession
-  });
+export function VoiceAnalysisPage() {
+  const {
+    uploadedFile,
+    customFileResult,
+    uploadProgress,
+    isUploading,
+    analysisStage,
+    chunkState,
+    fileError,
+    handleFileUpload,
+    handleClearFile
+  } = useFileUploadAnalysis();
 
-  const isUploadMode = state.ingestMode === 'upload';
-  const customRes = state.fileAnalysis.customFileResult;
-  const liveRes = state.backendStream.liveResult;
-  const isCritical = currentRiskScore >= 70;
-  const isDisplaySynthetic = isUploadMode && customRes 
-    ? customRes.isSynthetic 
-    : liveRes ? liveRes.is_synthetic : isCritical;
+  const resultsRef = useRef(null);
+
+  useEffect(() => {
+    if (isUploading || customFileResult) {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [isUploading, customFileResult]);
 
   return (
-    <div className="voice-analysis-console">
-      <IngestModeSelector
-        ingestMode={state.ingestMode}
-        onSelectMode={state.setIngestMode}
-        isStreaming={isStreaming}
-        onStopStream={onStopStream}
+    <div className="voice-analysis-console forensics-container">
+      {/* 1. Header Hero */}
+      <div className="forensics-hero-strip animate-fade-in">
+        <div>
+          <h2 className="forensics-hero-title">
+            <span>Recording Analysis: Acoustic Deepfake Inspector</span>
+          </h2>
+          <p className="forensics-hero-desc">
+            Multi-segment sliding window acoustics, biometrics drift tracking, and hybrid peak-mean synthetic speech detection.
+          </p>
+        </div>
+      </div>
+
+      {/* 2. File Upload Ingress */}
+      <AudioForensicIngress
+        uploadedFile={uploadedFile}
+        onFileSelect={(file) => handleFileUpload(file)}
+        onAnalyze={() => handleFileUpload(uploadedFile)}
+        onClear={handleClearFile}
+        isAnalyzing={isUploading}
+        fileError={fileError}
       />
 
-      <IngestModeRenderer
-        state={state}
-        activeCall={activeCall}
-        isStreaming={isStreaming}
-        streamMode={streamMode}
-        onStartStream={onStartStream}
-        onStopStream={onStopStream}
-        onSelectPreset={onSelectPreset}
-      />
-
-      {isStreaming && (
-        <>
-          <RealtimeVerdictBanner
-            label={liveRes?.label || customRes?.label}
-            isDisplaySynthetic={isDisplaySynthetic}
-            isStreaming={isStreaming}
-            realtimeFrame={state.realtimeFrame}
-            liveConfidence={liveRes?.confidence ? Math.round(liveRes.confidence * 100) : (isDisplaySynthetic ? 98.4 : 96.8)}
-            liveSyntheticProb={liveRes?.synthetic_probability !== undefined ? liveRes.synthetic_probability : (isDisplaySynthetic ? (currentRiskScore || 94.2) : 5.8)}
-            realtimePhonemeSegment={state.realtimePhonemeSegment}
-            modelIdentifier={liveRes?.model_identifier || customRes?.modelIdentifier || 'voiceshield-acoustic-dsp-v1'}
+      {/* 4. Multi-Process Execution Tracker & Results with Smooth Scroll Anchor */}
+      <div ref={resultsRef} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', scrollMarginTop: '20px' }}>
+        {isUploading && (
+          <ForensicPipelineTracker
+            stage={analysisStage}
+            progress={uploadProgress}
+            chunkState={chunkState}
           />
+        )}
 
-          <LiveWaveformSection
-            isStreaming={isStreaming}
-            streamMode={streamMode}
-            currentRiskScore={currentRiskScore}
-            activeCall={activeCall}
-            isDisplaySynthetic={isDisplaySynthetic}
-          />
+        {customFileResult && !isUploading && (
+          <>
+            <AggregatedVerdictBanner result={customFileResult} />
 
-          <InspectionTelemetrySplit
-            logs={state.callAnalysisLogs}
-            logFilter={state.logFilter}
-            onFilterChange={state.setLogFilter}
-            copiedLogs={state.copiedLogs}
-            onCopyLogs={() => {
-              navigator.clipboard?.writeText(JSON.stringify(state.callAnalysisLogs, null, 2));
-              state.setCopiedLogs(true);
-              setTimeout(() => state.setCopiedLogs(false), 1500);
-            }}
-            logsContainerRef={state.logsContainerRef}
-            isDisplaySynthetic={isDisplaySynthetic}
-            isStreaming={isStreaming}
-            liveJitter={liveRes?.metrics?.jitter_ppq ? `${liveRes.metrics.jitter_ppq}%` : isDisplaySynthetic ? '0.08%' : `${activeCall?.jitterPPQ || 0.74}%`}
-            liveShimmer={liveRes?.metrics?.shimmer_apq ? `${liveRes.metrics.shimmer_apq}%` : isDisplaySynthetic ? '0.40%' : `${activeCall?.shimmerAPQ || 2.15}%`}
-            liveLiveness={isDisplaySynthetic ? '12%' : '94%'}
-            spectralCentroid={liveRes?.metrics?.spectral_centroid || activeCall?.spectralCentroid || 2140}
-          />
-        </>
-      )}
+            <MultiBlockTimeline
+              segments={customFileResult.segments || []}
+              peakSegment={customFileResult.peak_segment}
+            />
+
+            <ForensicComparisonGraph
+              intervals={customFileResult.timeline_5s_intervals || []}
+              comparisonMetrics={customFileResult.comparison_metrics || {}}
+            />
+
+            <ForensicLLMTimelineLogs
+              llmExplanation={customFileResult.llm_risk_explanation}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

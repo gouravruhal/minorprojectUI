@@ -1,0 +1,106 @@
+{
+  "ai_samples": [
+    {
+      "filename": "ai_sample_1.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "HiFi-GAN V1 Neural Vocoder Synthetic Voice (Sample 1)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_1.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_sample_1.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_1.wav"
+    },
+    {
+      "filename": "ai_sample_2.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "HiFi-GAN V1 Neural Vocoder Synthetic Voice (Sample 2)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_2.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_sample_2.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_2.wav"
+    },
+    {
+      "filename": "ai_sample_3.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "HiFi-GAN V1 Neural Vocoder Synthetic Voice (Sample 3)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_3.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_sample_3.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_3.wav"
+    },
+    {
+      "filename": "ai_sample_4.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "HiFi-GAN V1 Neural Vocoder Synthetic Voice (Sample 4)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_4.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_sample_4.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_4.wav"
+    },
+    {
+      "filename": "ai_sample_5.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "HiFi-GAN V1 Neural Vocoder Synthetic Voice (Sample 5)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_5.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_sample_5.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_5.wav"
+    }
+  ],
+  "human_samples": [
+    {
+      "filename": "human_sample_1.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "Bona Fide Human Ground Truth Voice (Sample 1)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_1.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\human_sample_1.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_1.wav"
+    },
+    {
+      "filename": "human_sample_2.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "Bona Fide Human Ground Truth Voice (Sample 2)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_2.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\human_sample_2.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_2.wav"
+    },
+    {
+      "filename": "human_sample_3.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "Bona Fide Human Ground Truth Voice (Sample 3)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_3.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\human_sample_3.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_3.wav"
+    },
+    {
+      "filename": "human_sample_4.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "Bona Fide Human Ground Truth Voice (Sample 4)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_4.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\human_sample_4.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_4.wav"
+    },
+    {
+      "filename": "human_sample_5.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 2.5,
+      "sample_rate": 16000,
+      "description": "Bona Fide Human Ground Truth Voice (Sample 5)",
+      "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_5.wav",
+      "local_path": "C:\\codes\\Project\\downloads\\human_sample_5.wav",
+      "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_5.wav"
+    }
+  ]
+}

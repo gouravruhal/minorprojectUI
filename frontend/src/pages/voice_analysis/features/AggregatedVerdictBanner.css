@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Aggregated Verdict Banner - Claymorphic Styling (<= 200 lines)
+   Cyber Triad: Blue, Green, Yellow with Dynamic Theme Support
+   ========================================================================== */
+.aggregated-banner-card {
+  border-radius: 20px;
+  padding: 1.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  box-shadow: var(--shadow-clay);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.aggregated-banner-card.tier-critical {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.aggregated-banner-card.tier-high,
+.aggregated-banner-card.tier-elevated {
+  border-color: rgba(250, 204, 21, 0.4);
+}
+
+.aggregated-banner-card.tier-low {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.banner-top-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.banner-verdict-col { display: flex; align-items: center; gap: 1rem; }
+.banner-icon-bubble {
+  background: var(--bg-surface); padding: 0.85rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-clay);
+}
+
+.banner-eyebrow {
+  font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted);
+  letter-spacing: 0.05em; font-family: monospace; font-weight: 700;
+}
+.banner-title { margin: 0.2rem 0 0 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main); }
+.banner-score-group { display: flex; align-items: center; gap: 1.25rem; }
+.score-block { text-align: right; display: flex; flex-direction: column; }
+.score-label { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; font-weight: 700; }
+.score-val { font-size: 1.85rem; font-weight: 900; font-family: monospace; color: var(--text-main); }
+
+.threat-badge {
+  font-size: 0.84rem; font-weight: 800; padding: 0.45rem 1rem;
+  border-radius: 9999px; letter-spacing: 0.05em; text-transform: uppercase;
+  box-shadow: var(--shadow-clay);
+}
+.threat-badge.tier-critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); }
+.threat-badge.tier-high,
+.threat-badge.tier-elevated { background: rgba(250, 204, 21, 0.15); color: var(--accent-yellow); border: 1px solid rgba(250, 204, 21, 0.35); }
+.threat-badge.tier-low { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.35); }
+
+.action-recommendation-strip {
+  background: var(--bg-inset); border-left: 4px solid var(--accent-blue); padding: 0.75rem 1.15rem;
+  border-radius: 12px; display: flex; align-items: center; gap: 0.65rem;
+  box-shadow: var(--shadow-clay-inset);
+}
+.action-label { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; }
+.action-command { color: var(--text-main); font-weight: 800; font-size: 0.86rem; font-family: monospace; letter-spacing: 0.02em; }
+.banner-details-row { display: flex; gap: 0.85rem; flex-wrap: wrap; }
+.detail-chip {
+  background: var(--bg-surface); padding: 0.4rem 0.85rem; border-radius: 9999px;
+  display: flex; align-items: center; gap: 0.45rem; font-size: 0.76rem; font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-clay);
+}
+.chip-label { color: var(--text-muted); }
+.chip-val { font-weight: 700; font-family: monospace; color: var(--text-main); }

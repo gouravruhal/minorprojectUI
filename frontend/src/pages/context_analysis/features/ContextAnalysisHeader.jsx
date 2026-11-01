@@ -1,34 +1,30 @@
 import React from 'react';
-import { SIMULATION_PRESETS } from '../../../core/state/useCallSession';
+import { BrainCircuit, ShieldAlert, ShieldCheck } from 'lucide-react';
 
-export function ContextAnalysisHeader({ activeCall, isCritical, onSelectPreset }) {
+export function ContextAnalysisHeader({ isCritical = false, recordingCount = 4 }) {
   return (
-    <section className="context-header card">
+    <section className="context-header card clay-card">
       <div className="context-header-left">
         <div className="header-badge-row">
-          <span className="badge badge-neutral">NLP MULTI-MODAL TIER</span>
+          <span className="badge badge-neutral flex-center gap-1">
+            <BrainCircuit size={12} />
+            <span>TIER 2 &bull; NLP & CONVERSATIONAL CONTEXT</span>
+          </span>
           <span className={`badge ${isCritical ? 'badge-danger' : 'badge-safe'}`}>
-            {isCritical ? 'MALICIOUS CONTEXT DETECTED' : 'NORMAL CONVERSATIONAL FLOW'}
+            {isCritical ? <ShieldAlert size={12} /> : <ShieldCheck size={12} />}
+            <span>{isCritical ? 'HIGH CONVERSATIONAL THREAT' : 'BENIGN CONVERSATION'}</span>
+          </span>
+          <span className="badge badge-accent">
+            {recordingCount} Voice Recordings Ready
           </span>
         </div>
-        <h2 className="context-title">Conversational Context & Social Engineering Analysis</h2>
+        <h2 className="context-title">Conversational Context & Social Engineering Forensics</h2>
         <p className="context-subtitle">
-          Natural language understanding (NLU) pipeline inspecting live speech transcripts for urgency markers, authority impersonation, and fraudulent transactional demands.
+          Synchronizes with Voice Analysis recordings to transcribe speech-to-text, extract psychological urgency and coercion tokens, and fuse multi-modal Bayesian risk.
         </p>
-      </div>
-
-      <div className="context-preset-pills">
-        {SIMULATION_PRESETS.map((preset) => (
-          <button
-            key={preset.id}
-            className={`context-pill-btn ${activeCall.id === preset.id ? 'active' : ''}`}
-            onClick={() => onSelectPreset(preset)}
-          >
-            <span className={`pill-dot ${preset.category === 'critical' ? 'danger' : 'safe'}`} />
-            <span>{preset.title.split(' (')[0]}</span>
-          </button>
-        ))}
       </div>
     </section>
   );
 }
+
+export default ContextAnalysisHeader;

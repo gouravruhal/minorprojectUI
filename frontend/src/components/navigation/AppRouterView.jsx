@@ -1,6 +1,9 @@
 import React from 'react';
 import { OverviewPage } from '../../pages/overview/OverviewPage';
 import { VoiceAnalysisPage } from '../../pages/voice_analysis/VoiceAnalysisPage';
+import { MicrophoneAnalysisPage } from '../../pages/microphone_analysis/MicrophoneAnalysisPage';
+import { TelephonyLinkPage } from '../../pages/telephony_link/TelephonyLinkPage';
+import { HistoryPage } from '../../pages/history/HistoryPage';
 import { ContextAnalysisPage } from '../../pages/context_analysis/ContextAnalysisPage';
 import { RiskAssessmentPage } from '../../pages/risk_assessment/RiskAssessmentPage';
 import { AlertsPreventionPage } from '../../pages/alerts_prevention/AlertsPreventionPage';
@@ -16,7 +19,7 @@ export function AppRouterView({
       {activeTab === 'overview' && (
         <OverviewPage
           onLaunchConsole={() => onNavigateTab('voice')}
-          onLaunchPipeline={() => onNavigateTab('voice')}
+          onLaunchPipeline={() => onNavigateTab('mic-analysis')}
         />
       )}
 
@@ -38,6 +41,12 @@ export function AppRouterView({
           onResetCallSession={callSession.resetCallSession}
         />
       )}
+
+      {activeTab === 'mic-analysis' && <MicrophoneAnalysisPage />}
+
+      {activeTab === 'telephony' && <TelephonyLinkPage />}
+
+      {activeTab === 'history' && <HistoryPage />}
 
       {activeTab === 'context' && (
         <ContextAnalysisPage

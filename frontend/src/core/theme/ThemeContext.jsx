@@ -6,7 +6,7 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [themeMode, setThemeMode] = useState(() => {
-    return localStorage.getItem('voiceshield_theme') || 'dark';
+    return localStorage.getItem('voiceshield_theme') || 'light';
   });
 
   const [activePaletteId, setActivePaletteId] = useState(() => {

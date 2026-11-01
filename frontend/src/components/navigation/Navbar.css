@@ -1,7 +1,11 @@
+/* ==========================================================================
+   VoiceShield AI - Claymorphic Floating Dock Navigation (<= 200 lines)
+   Cyber Triad: Blue, Green, Yellow Palette with Dynamic Theme Support
+   ========================================================================== */
 .navbar-fixed-wrapper {
   position: sticky;
   top: 14px;
-  z-index: var(--z-nav);
+  z-index: var(--z-nav, 1000);
   display: flex;
   justify-content: center;
   padding: 0 16px;
@@ -13,15 +17,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 6px 16px;
-  background: var(--bg-surface-solid);
+  padding: 8px 20px;
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  max-width: 1200px;
+  border-radius: 9999px;
+  box-shadow: var(--shadow-clay);
+  max-width: 1040px;
   width: 100%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 .navbar-left {
   display: flex;
@@ -35,10 +40,10 @@
   gap: 8px;
 }
 .brand-name {
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 900;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--c-persimmon), var(--c-light-peach));
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 50%, var(--accent-yellow) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -52,24 +57,25 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  border-radius: 9999px;
   border: none;
   background: transparent;
-  color: var(--text-dim);
-  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
 }
 .nav-tab-btn:hover {
-  color: var(--text-main);
+  color: var(--accent-blue);
 }
 .nav-tab-btn.active {
-  background: var(--bg-inset);
-  color: var(--c-persimmon);
-  box-shadow: var(--shadow-sm);
+  background: var(--clay-gradient);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: var(--shadow-clay-btn);
 }
 .nav-divider {
   color: var(--border-subtle);
@@ -82,8 +88,8 @@
   gap: 8px;
 }
 .cylindrical-toggle {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid var(--border-subtle);
   background: var(--bg-inset);
@@ -92,13 +98,14 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: var(--shadow-clay);
   transition: all 0.2s ease;
 }
 .cylindrical-toggle:hover {
-  color: var(--c-persimmon);
-  border-color: var(--c-persimmon);
+  color: var(--accent-blue);
+  background: var(--bg-elevated);
 }
 @media (max-width: 900px) {
   .nav-divider { display: none; }
-  .site-navbar.cylindrical-dock { border-radius: var(--radius-sm); }
+  .site-navbar.cylindrical-dock { border-radius: 20px; }
 }

@@ -79,10 +79,63 @@ export async function uploadRecording(file, consent = true, sessionId = null) {
   return await res.json();
 }
 
+export async function analyzeAudioEnterprise(file, context = {}) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('transaction_sensitivity', context.transactionSensitivity || 'high');
+  formData.append('caller_trust_level', context.callerTrustLevel || 'standard');
+  formData.append('unusual_location_or_voip_flag', context.unusualLocationOrVoipFlag ? 'true' : 'false');
+  if (context.callerId) formData.append('caller_id', context.callerId);
+
+  const res = await fetch(`${API_BASE}/v1/analyze-audio`, {
+    method: 'POST',
+    body: formData
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
+    throw new Error(errData.detail || `Enterprise analysis failed with status ${res.status}`);
+  }
+  return await res.json();
+}
+
 export async function getAnalysisResult(analysisId) {
   const res = await fetch(`${API_BASE}/voice/analysis/${analysisId}`);
   if (!res.ok) throw new Error(`HTTP error ${res.status}`);
   return await res.json();
+}
+
+export async function getRecentAnalyses(limit = 15) {
+  try {
+    const res = await fetch(`${API_BASE}/voice/analyses/recent?limit=${limit}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function generateContextForRecording(payload) {
+  try {
+    const res = await fetch(`${API_BASE}/context/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getRecentContextReports(limit = 15) {
+  try {
+    const res = await fetch(`${API_BASE}/context/reports?limit=${limit}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 export async function checkBackendHealth() {
@@ -92,6 +145,15 @@ export async function checkBackendHealth() {
     return await res.json();
   } catch {
     return { status: 'offline' };
+  }
+}
+
+export async function clearDatabase() {
+  try {
+    const res = await fetch(`${API_BASE}/database/clear`, { method: 'POST' });
+    return await res.json();
+  } catch (err) {
+    return { status: 'error', error: err.message };
   }
 }
 

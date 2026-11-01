@@ -90,5 +90,33 @@ class TestVoiceAnalysisAPI(unittest.TestCase):
             stop_ack = websocket.receive_json()
             self.assertEqual(stop_ack["status"], "stopped")
 
+    def test_context_analysis_generation_and_storage(self):
+        """Validates Speech-to-Text, LLM reasoning generation, and SQLite table persistence."""
+        payload = {
+            "filename": "test_ceo_call.wav",
+            "caller_name": "Executive Mark",
+            "acoustic_risk": 82.5,
+            "voice_swap_detected": True,
+            "duration_seconds": 20.0
+        }
+        res = self.client.post("/api/context/generate", json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertTrue(data["context_id"].startswith("CTX-"))
+        self.assertEqual(data["unified_threat_tier"], "CRITICAL")
+        self.assertIn("Forensic Risk Summary", data["llm_reasoning_summary"])
+        self.assertIn("keywords", data)
+
+        # Retrieve saved report by context_id
+        ctx_id = data["context_id"]
+        get_res = self.client.get(f"/api/context/reports/{ctx_id}")
+        self.assertEqual(get_res.status_code, 200)
+        self.assertEqual(get_res.json()["context_id"], ctx_id)
+
+        # Verify listed in recent reports
+        list_res = self.client.get("/api/context/reports")
+        self.assertEqual(list_res.status_code, 200)
+        self.assertTrue(any(r["context_id"] == ctx_id for r in list_res.json()))
+
 if __name__ == "__main__":
     unittest.main()

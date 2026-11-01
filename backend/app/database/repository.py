@@ -44,6 +44,12 @@ def update_session_status(session_id: str, status: str) -> bool:
 def save_analysis(data: Dict[str, Any]) -> Dict[str, Any]:
     now = datetime.now(timezone.utc).isoformat()
     analysis_id = data["analysis_id"]
+    packed_metrics = dict(data.get("metrics", {}))
+    packed_metrics["_timeline_5s"] = data.get("timeline_5s_intervals", [])
+    packed_metrics["_comparison_metrics"] = data.get("comparison_metrics", {})
+    packed_metrics["_temporal_dynamics"] = data.get("temporal_dynamics", {})
+    packed_metrics["_llm_risk_explanation"] = data.get("llm_risk_explanation", {})
+
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -61,7 +67,7 @@ def save_analysis(data: Dict[str, Any]) -> Dict[str, Any]:
                 data.get("metrics", {}).get("duration_seconds", 0.0), data["label"],
                 data["confidence"], data["synthetic_probability"], 1 if data["is_synthetic"] else 0,
                 data.get("status", "success"), data.get("model_identifier", "voiceshield-acoustic-dsp-v1"),
-                json.dumps(data.get("metrics", {})), json.dumps(data.get("segments", [])),
+                json.dumps(packed_metrics), json.dumps(data.get("segments", [])),
                 data.get("processing_time_ms", 0.0), data.get("error_message"), now
             )
         )
@@ -77,7 +83,12 @@ def get_analysis(analysis_id: str) -> Optional[Dict[str, Any]]:
         if not row:
             return None
         item = dict(row)
-        item["metrics"] = json.loads(item["metrics_json"])
+        metrics_raw = json.loads(item["metrics_json"])
+        item["timeline_5s_intervals"] = metrics_raw.pop("_timeline_5s", [])
+        item["comparison_metrics"] = metrics_raw.pop("_comparison_metrics", {})
+        item["temporal_dynamics"] = metrics_raw.pop("_temporal_dynamics", {})
+        item["llm_risk_explanation"] = metrics_raw.pop("_llm_risk_explanation", {})
+        item["metrics"] = metrics_raw
         item["segments"] = json.loads(item["segments_json"])
         item["segments_count"] = len(item["segments"])
         item["disclaimer"] = (
@@ -86,3 +97,85 @@ def get_analysis(analysis_id: str) -> Optional[Dict[str, Any]]:
         )
         item["is_synthetic"] = bool(item["is_synthetic"])
         return item
+
+def get_recent_analyses(limit: int = 15) -> list[Dict[str, Any]]:
+    """Retrieves most recent voice analyses ordered by creation timestamp."""
+    results = []
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM voice_analyses ORDER BY created_at DESC LIMIT ?", (limit,))
+        for row in cursor.fetchall():
+            item = dict(row)
+            try:
+                item["metrics"] = json.loads(item.get("metrics_json", "{}"))
+                item["segments"] = json.loads(item.get("segments_json", "[]"))
+            except Exception:
+                item["metrics"], item["segments"] = {}, []
+            item["is_synthetic"] = bool(item["is_synthetic"])
+            results.append(item)
+    return results
+
+def save_context_analysis(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Persists structured conversational transcript, NLP threat scores, and LLM reasoning."""
+    now = datetime.now(timezone.utc).isoformat()
+    cid = data.get("context_id") or f"CTX-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+    data["context_id"] = cid
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT OR REPLACE INTO context_analyses (
+                context_id, analysis_id, filename, caller_name, network, duration_seconds,
+                transcript, intent_category, keywords_json, linguistic_score, urgency_index,
+                acoustic_risk, unified_risk_score, unified_threat_tier, recommended_action,
+                llm_reasoning_summary, llm_model, metadata_json, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                cid, data.get("analysis_id"), data.get("filename", "audio_sample.wav"),
+                data.get("caller_name", "Caller"), data.get("network", "Standard PSTN"),
+                float(data.get("duration_seconds", 4.0)), data.get("transcript", ""),
+                data.get("intent_category", "Benign Conversation"),
+                json.dumps(data.get("keywords", [])), float(data.get("linguistic_score", 10.0)),
+                float(data.get("urgency_index", 10.0)), float(data.get("acoustic_risk", 10.0)),
+                float(data.get("unified_risk_score", 10.0)), data.get("unified_threat_tier", "LOW"),
+                data.get("recommended_action", "CONTINUE_MONITORING"),
+                data.get("llm_reasoning_summary", ""), data.get("llm_model", "ForensicLLMReasoner-v2"),
+                json.dumps(data.get("metadata", {})), now
+            )
+        )
+        conn.commit()
+    data["created_at"] = now
+    return data
+
+def get_context_analysis(context_id: str) -> Optional[Dict[str, Any]]:
+    """Retrieves context analysis report and parsed entity list by ID."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM context_analyses WHERE context_id = ?", (context_id,))
+        row = cursor.fetchone()
+        if not row:
+            return None
+        item = dict(row)
+        try:
+            item["keywords"] = json.loads(item.get("keywords_json", "[]"))
+            item["metadata"] = json.loads(item.get("metadata_json", "{}"))
+        except Exception:
+            item["keywords"], item["metadata"] = [], {}
+        return item
+
+def get_recent_context_analyses(limit: int = 15) -> list[Dict[str, Any]]:
+    """Retrieves recent context analysis reports ordered by creation date."""
+    results = []
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM context_analyses ORDER BY created_at DESC LIMIT ?", (limit,))
+        for row in cursor.fetchall():
+            item = dict(row)
+            try:
+                item["keywords"] = json.loads(item.get("keywords_json", "[]"))
+                item["metadata"] = json.loads(item.get("metadata_json", "{}"))
+            except Exception:
+                item["keywords"], item["metadata"] = [], {}
+            results.append(item)
+    return results

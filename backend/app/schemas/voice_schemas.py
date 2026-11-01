@@ -56,6 +56,10 @@ class AnalysisResponse(BaseModel):
     disclaimer: str
     segments_count: int
     segments: List[Dict[str, Any]] = []
+    timeline_5s_intervals: Optional[List[Dict[str, Any]]] = None
+    comparison_metrics: Optional[Dict[str, Any]] = None
+    temporal_dynamics: Optional[Dict[str, Any]] = None
+    llm_risk_explanation: Optional[Dict[str, Any]] = None
     metrics: Dict[str, Any]
     created_at: str
     error_message: Optional[str] = None

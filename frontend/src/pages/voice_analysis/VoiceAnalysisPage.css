@@ -1,120 +1,42 @@
-/* Voice Analysis Page Layout & Ingress Header */
+/* ==========================================================================
+   VoiceShield AI - Centralized Claymorphic Voice Forensics Layout (<= 200 lines)
+   Cyber Triad: Blue, Green, Yellow Palette with Dynamic Theme Support
+   ========================================================================== */
 .voice-analysis-console {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-bottom: 40px;
+  gap: 1.75rem;
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 3.5rem 1.25rem;
+  scroll-behavior: smooth;
 }
 
-.ingress-header {
-  padding: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+/* Claymorphic Global Surface Helper */
+.clay-card {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-clay);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ingress-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 620px;
+.clay-card:hover {
+  filter: brightness(1.02);
 }
 
-.header-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.latency-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.72rem;
-  color: var(--c-persimmon);
-  font-weight: 700;
-  background: rgba(234, 88, 12, 0.1);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-}
-
-.ingress-title-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.ingress-title {
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text-main);
-}
-
-.ingress-subtitle {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-.mode-segmented-bar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+/* Clay Inset Well Helper */
+.clay-inset {
   background: var(--bg-inset);
-  padding: 4px;
-  border-radius: var(--radius-sm);
+  border-radius: 14px;
   border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-clay-inset);
 }
 
-.mode-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: var(--radius-xs);
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 0.825rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mode-btn:hover {
-  color: var(--text-main);
-}
-
-.mode-btn.active {
-  background: var(--bg-surface-solid);
-  color: var(--c-persimmon);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-subtle);
-}
-
-.ingress-control-panel {
-  padding: 20px 24px;
-}
-
-.ingress-control-panel.ingress-preset-mode {
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-.console-split-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-@media (max-width: 900px) {
-  .console-split-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .voice-analysis-console {
+    gap: 1.25rem;
+    padding: 0.75rem 0.5rem 2rem 0.5rem;
   }
 }

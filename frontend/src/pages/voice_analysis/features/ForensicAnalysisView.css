@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Voice Forensics & Deepfake Inspector - Claymorphic CSS (<= 200 lines)
+   Cyber Triad: Blue (#0ea5e9), Green (#10b981), Yellow (#facc15)
+   ========================================================================== */
+.forensics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1040px;
+  margin: 0 auto;
+  scroll-behavior: smooth;
+}
+.forensics-hero-strip {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  padding: 1.35rem 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-clay);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.forensics-hero-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.forensics-hero-desc { margin: 0.35rem 0 0 0; font-size: 0.84rem; color: var(--text-muted); }
+.forensics-badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--accent-yellow);
+  box-shadow: var(--shadow-clay);
+}
+.forensic-ingress-card {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-clay);
+}
+.forensic-dropzone {
+  border: 2px dashed var(--border-subtle);
+  border-radius: 16px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  background: var(--bg-inset);
+  cursor: pointer;
+  box-shadow: var(--shadow-clay-inset);
+  transition: all 0.2s ease;
+}
+.forensic-dropzone:hover, .forensic-dropzone.drag-active {
+  border-color: var(--accent-blue);
+  background: var(--bg-elevated);
+}
+.dropzone-icon-bubble {
+  width: 52px; height: 52px; margin: 0 auto 0.75rem; border-radius: 50%;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-clay);
+  display: flex; align-items: center; justify-content: center;
+}
+.file-avatar-ring {
+  width: 38px; height: 38px; border-radius: 50%; background: var(--bg-inset);
+  box-shadow: var(--shadow-clay);
+  display: flex; align-items: center; justify-content: center;
+}
+.error-alert-strip {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.85rem; padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px;
+  color: var(--danger-red); font-size: 0.84rem; font-weight: 600;
+}
+.file-meta-header-row {
+  display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;
+  padding: 0.9rem 1.25rem; background: var(--bg-inset); border-radius: 14px;
+  box-shadow: var(--shadow-clay-inset);
+}
+.pipeline-tracker-box {
+  background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border-subtle);
+  padding: 1.35rem 1.75rem; box-shadow: var(--shadow-clay);
+}
+.stages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+.stage-pill {
+  padding: 0.65rem 0.85rem; border-radius: 12px; background: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-clay);
+  font-size: 0.76rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; color: var(--text-dim);
+}
+.stage-pill.active {
+  background: var(--bg-elevated); border-color: var(--accent-blue); color: var(--accent-blue);
+  box-shadow: var(--shadow-clay-inset);
+}
+.stage-pill.done { background: rgba(16, 185, 129, 0.12); border-color: #10b981; color: var(--accent-green); }
+.comparison-section-card {
+  background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border-subtle);
+  padding: 1.5rem; box-shadow: var(--shadow-clay);
+}
+.timeline-intervals-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.75rem; margin-top: 0.75rem; }
+.interval-box-card {
+  min-width: 175px; background: var(--bg-surface); border-radius: 14px;
+  border: 1px solid var(--border-subtle); padding: 0.85rem;
+  display: flex; flex-direction: column; gap: 0.45rem;
+  box-shadow: var(--shadow-clay);
+}
+.interval-box-card.anomaly { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.08); }
+.interval-box-card.human { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08); }
+.comparative-biometric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.biometric-metric-card {
+  background: var(--bg-surface); border-radius: 14px; border: 1px solid var(--border-subtle);
+  padding: 1rem; box-shadow: var(--shadow-clay);
+}
+.biometric-metric-card.alert { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.08); }
+.llm-forensic-box {
+  background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border-subtle);
+  padding: 1.5rem; box-shadow: var(--shadow-clay);
+}
+.llm-summary-content {
+  background: var(--bg-inset); border-radius: 14px; padding: 1.15rem 1.35rem; margin-top: 1rem;
+  color: var(--text-dim); font-size: 0.88rem; line-height: 1.6;
+  box-shadow: var(--shadow-clay-inset);
+}
+.timeline-logs-feed { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+.timeline-log-entry {
+  background: var(--bg-surface); border-left: 4px solid var(--accent-blue); border-radius: 12px;
+  padding: 0.85rem 1.15rem; box-shadow: var(--shadow-clay);
+}
+.timeline-log-entry.human { border-left-color: var(--accent-green); }

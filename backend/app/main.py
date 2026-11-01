@@ -11,6 +11,8 @@ from backend.app.database.db import init_db
 from backend.app.utils.temp_storage import cleanup_temp_dir
 from backend.app.api.voice_routes import router as voice_router
 from backend.app.api.health_routes import router as health_router
+from backend.app.api.forensic_stream_routes import router as stream_router
+from backend.app.api.context_routes import router as context_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,6 +32,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:[0-9]+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,6 +40,8 @@ app.add_middleware(
 
 app.include_router(health_router)
 app.include_router(voice_router)
+app.include_router(stream_router)
+app.include_router(context_router)
 
 if __name__ == "__main__":
     import uvicorn

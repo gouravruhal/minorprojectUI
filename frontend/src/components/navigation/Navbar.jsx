@@ -21,7 +21,7 @@ export function Navbar({ activeTab, onSelectTab, _isStreaming }) {
             className={`nav-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => onSelectTab('overview')}
           >
-            <span>Overview & Team</span>
+            <span>Team Overview</span>
           </button>
           <span className="nav-divider">|</span>
           <button
@@ -29,39 +29,31 @@ export function Navbar({ activeTab, onSelectTab, _isStreaming }) {
             className={`nav-tab-btn ${activeTab === 'voice' ? 'active' : ''}`}
             onClick={() => onSelectTab('voice')}
           >
-            <span>Voice Analysis</span>
+            <span>Recording Analysis</span>
           </button>
           <span className="nav-divider">|</span>
           <button
-            id="nav-tab-context"
-            className={`nav-tab-btn ${activeTab === 'context' ? 'active' : ''}`}
-            onClick={() => onSelectTab('context')}
+            id="nav-tab-mic"
+            className={`nav-tab-btn ${activeTab === 'mic-analysis' ? 'active' : ''}`}
+            onClick={() => onSelectTab('mic-analysis')}
           >
-            <span>Context Analysis</span>
+            <span>Microphone Analysis</span>
           </button>
           <span className="nav-divider">|</span>
           <button
-            id="nav-tab-risk"
-            className={`nav-tab-btn ${activeTab === 'risk' ? 'active' : ''}`}
-            onClick={() => onSelectTab('risk')}
+            id="nav-tab-telephony"
+            className={`nav-tab-btn ${activeTab === 'telephony' ? 'active' : ''}`}
+            onClick={() => onSelectTab('telephony')}
           >
-            <span>Risk Assessment</span>
+            <span>Hardware Call Capture</span>
           </button>
           <span className="nav-divider">|</span>
           <button
-            id="nav-tab-alerts"
-            className={`nav-tab-btn ${activeTab === 'alerts' ? 'active' : ''}`}
-            onClick={() => onSelectTab('alerts')}
+            id="nav-tab-history"
+            className={`nav-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => onSelectTab('history')}
           >
-            <span>Alerts & Prevention</span>
-          </button>
-          <span className="nav-divider">|</span>
-          <button
-            id="nav-tab-privacy"
-            className={`nav-tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
-            onClick={() => onSelectTab('privacy')}
-          >
-            <span>Privacy & Compliance</span>
+            <span>History & Logs</span>
           </button>
         </div>
 

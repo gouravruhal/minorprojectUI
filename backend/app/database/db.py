@@ -47,6 +47,38 @@ def init_db():
                 FOREIGN KEY (session_id) REFERENCES sessions(session_id)
             );
         """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS context_analyses (
+                context_id TEXT PRIMARY KEY,
+                analysis_id TEXT,
+                filename TEXT NOT NULL,
+                caller_name TEXT,
+                network TEXT,
+                duration_seconds REAL,
+                transcript TEXT NOT NULL,
+                intent_category TEXT NOT NULL,
+                keywords_json TEXT NOT NULL,
+                linguistic_score REAL NOT NULL,
+                urgency_index REAL NOT NULL,
+                acoustic_risk REAL NOT NULL,
+                unified_risk_score REAL NOT NULL,
+                unified_threat_tier TEXT NOT NULL,
+                recommended_action TEXT NOT NULL,
+                llm_reasoning_summary TEXT,
+                llm_model TEXT,
+                metadata_json TEXT,
+                created_at TEXT NOT NULL
+            );
+        """)
+        conn.commit()
+
+def clear_db():
+    """Removes all rows from sessions, voice_analyses, and context_analyses."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM voice_analyses;")
+        cursor.execute("DELETE FROM context_analyses;")
+        cursor.execute("DELETE FROM sessions;")
         conn.commit()
 
 @contextmanager

@@ -1,0 +1,43 @@
+/* ==========================================================================
+   VoiceShield AI - Hardware Telephony Link Page (<= 200 lines)
+   ========================================================================== */
+.telephony-link-view { display: flex; flex-direction: column; gap: 24px; padding-bottom: 40px; }
+.telephony-page-header { padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-md); }
+.telephony-header-left { display: flex; flex-direction: column; gap: 8px; max-width: 780px; }
+.telephony-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main); margin: 0; }
+.telephony-subtitle { font-size: 0.84rem; color: var(--text-dim); line-height: 1.5; margin: 0; }
+
+/* Circuit Flow Diagram */
+.hardware-diagram-card { padding: 22px; display: flex; flex-direction: column; gap: 18px; border-radius: var(--radius-md); }
+.circuit-nodes-flow { display: flex; align-items: center; gap: 14px; overflow-x: auto; padding-bottom: 6px; }
+.circuit-node-box { flex: 1; min-width: 200px; padding: 16px; border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 10px; }
+.node-icon-bubble { width: 40px; height: 40px; border-radius: var(--radius-xs); background: rgba(56, 189, 248, 0.12); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; }
+.node-info { display: flex; flex-direction: column; gap: 4px; }
+.node-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin: 0; }
+.node-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; margin: 0; }
+.circuit-flow-arrow { display: flex; align-items: center; justify-content: center; opacity: 0.7; }
+
+/* Diagnostics Panel */
+.hardware-diagnostics-card { padding: 22px; display: flex; flex-direction: column; gap: 18px; border-radius: var(--radius-md); }
+.diagnostics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.spec-metric-card { padding: 14px 16px; border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 6px; }
+.spec-label-row { display: flex; justify-content: space-between; align-items: center; }
+.spec-label { font-size: 0.75rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.spec-value { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+
+/* Deployment Guide */
+.deployment-guide-card { padding: 22px; display: flex; flex-direction: column; gap: 18px; border-radius: var(--radius-md); }
+.deploy-steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.deploy-step-box { padding: 18px; border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 8px; position: relative; }
+.step-num-pill { font-size: 1.1rem; font-weight: 900; color: var(--accent-blue); }
+.step-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin: 0; }
+.step-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin: 0; }
+
+.spin-anim { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .circuit-nodes-flow { flex-direction: column; align-items: stretch; }
+  .circuit-flow-arrow { transform: rotate(90deg); margin: 4px 0; }
+}
+
