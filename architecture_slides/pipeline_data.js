@@ -135,3 +135,4 @@ export const PREDICTION_SCENARIOS = {
     verdictSummary: "Severe low-frequency acoustic attenuation (<260Hz) and transducer non-linear resonance detect synthetic audio replayed from mobile phone into microphone."
   }
 };
+

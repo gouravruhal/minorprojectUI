@@ -22,24 +22,24 @@ async def generate_context_report(req: ContextGenerateRequest):
     risk = float(req.acoustic_risk or 25.0)
     swap = bool(req.voice_swap_detected)
 
-    # 1. Deterministic Semantic & Speech-to-Text derivation
-    if "user" in fn or "gourav" in fn or "human" in fn or (risk < 30.0 and "ai" not in fn and "splice" not in fn):
-        transcript = "Hello, my name is Gourav, and this is human voice. I am confirming my account identity and regular authorization."
-        keywords = ["Gourav", "Identity Confirmation", "Regular Authorization"]
+    # 1. Dynamic acoustic telemetry derivation
+    if risk < 30.0 and not swap:
+        transcript = f"Acoustic verification stream for {req.filename}. Phonation baselines conform to natural human vocal physiology."
+        keywords = ["Identity Confirmation", "Verified Phonation", "Biological Speech"]
         ling, urg = 8.0, 6.0
         intent = "Benign Customer Identity Verification"
         action = "CONTINUE_MONITORING"
-    elif "splice" in fn or "swap" in fn or "20s" in fn or risk >= 80.0 or swap:
-        transcript = "This is Mark from Executive Office. We have an urgent offshore wire of $450,000 for the acquisition closing before 5 PM. Bypass standard dual-control MFA immediately and confirm via private channel."
-        keywords = ["Urgent", "$450,000 wire", "Bypass standard MFA", "Immediately", "Offshore"]
+    elif risk >= 75.0 or swap:
+        transcript = f"High-risk forensic alert for {req.filename}. Anomaly score indicates synthetic clone injection or mid-stream speaker drift."
+        keywords = ["Acoustic Anomaly", "Synthetic Voice Alert", "Biometric Breach", "Urgent Intervention"]
         ling, urg = 96.0, 98.0
-        intent = "CEO Impersonation & High-Value Wire Fraud"
+        intent = "Synthetic Voice Impersonation & Security Override"
         action = "TERMINATE_TRANSACTION"
     else:
-        transcript = "Hello, I am calling from IT Security. We detected an unauthorized login to your enterprise terminal. Please read out your one-time multi-factor authentication token right now to prevent account suspension."
-        keywords = ["IT Security", "Unauthorized login", "Read out OTP", "Right now", "Account suspension"]
-        ling, urg = 88.0, 92.0
-        intent = "Credential Harvesting & Security Token Vishing"
+        transcript = f"Suspicious acoustic characteristics detected in {req.filename}. Elevated spectral irregularity requires step-up verification."
+        keywords = ["Spectral Irregularity", "Step-Up Verification", "Elevated Threat"]
+        ling, urg = 65.0, 70.0
+        intent = "Potential Impersonation & Unverified Phonation"
         action = "TRIGGER_MFA_CHALLENGE"
 
     # 2. Multi-Modal Unified Bayesian Risk Calculation

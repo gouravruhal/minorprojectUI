@@ -23,3 +23,4 @@ export const NODE_SPECS = {
 export function getNodeSpec(nodeId) {
   return NODE_SPECS[nodeId] || "Deterministic acoustic feature extraction and telemetry monitoring.";
 }
+

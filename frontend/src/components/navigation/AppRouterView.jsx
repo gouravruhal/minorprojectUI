@@ -4,16 +4,8 @@ import { VoiceAnalysisPage } from '../../pages/voice_analysis/VoiceAnalysisPage'
 import { MicrophoneAnalysisPage } from '../../pages/microphone_analysis/MicrophoneAnalysisPage';
 import { TelephonyLinkPage } from '../../pages/telephony_link/TelephonyLinkPage';
 import { HistoryPage } from '../../pages/history/HistoryPage';
-import { ContextAnalysisPage } from '../../pages/context_analysis/ContextAnalysisPage';
-import { RiskAssessmentPage } from '../../pages/risk_assessment/RiskAssessmentPage';
-import { AlertsPreventionPage } from '../../pages/alerts_prevention/AlertsPreventionPage';
-import { PrivacyCompliancePage } from '../../pages/privacy_compliance/PrivacyCompliancePage';
 
-export function AppRouterView({
-  activeTab,
-  onNavigateTab,
-  callSession
-}) {
+export function AppRouterView({ activeTab, onNavigateTab }) {
   return (
     <div key={activeTab} className="page-transition-wrapper">
       {activeTab === 'overview' && (
@@ -23,65 +15,13 @@ export function AppRouterView({
         />
       )}
 
-      {activeTab === 'voice' && (
-        <VoiceAnalysisPage
-          activeCall={callSession.activeCall}
-          isStreaming={callSession.isStreaming}
-          streamMode={callSession.streamMode}
-          currentRiskScore={callSession.currentRiskScore}
-          callDuration={callSession.callDuration}
-          isFrozen={callSession.isFrozen}
-          diagnostics={callSession.diagnostics}
-          onSelectPreset={callSession.selectPreset}
-          onStartStream={callSession.startStream}
-          onStopStream={callSession.stopStream}
-          onTriggerFreeze={callSession.triggerFreeze}
-          onTriggerMfa={callSession.triggerMfa}
-          onUpdateActiveCall={callSession.updateActiveCall}
-          onResetCallSession={callSession.resetCallSession}
-        />
-      )}
+      {activeTab === 'voice' && <VoiceAnalysisPage />}
 
       {activeTab === 'mic-analysis' && <MicrophoneAnalysisPage />}
 
       {activeTab === 'telephony' && <TelephonyLinkPage />}
 
       {activeTab === 'history' && <HistoryPage />}
-
-      {activeTab === 'context' && (
-        <ContextAnalysisPage
-          activeCall={callSession.activeCall}
-          isStreaming={callSession.isStreaming}
-          currentRiskScore={callSession.currentRiskScore}
-          isFrozen={callSession.isFrozen}
-          onSelectPreset={callSession.selectPreset}
-          onTriggerFreeze={callSession.triggerFreeze}
-          onTriggerMfa={callSession.triggerMfa}
-        />
-      )}
-
-      {activeTab === 'risk' && (
-        <RiskAssessmentPage
-          activeCall={callSession.activeCall}
-          isStreaming={callSession.isStreaming}
-          currentRiskScore={callSession.currentRiskScore}
-          riskHistory={callSession.riskHistory}
-          onSelectPreset={callSession.selectPreset}
-        />
-      )}
-
-      {activeTab === 'alerts' && (
-        <AlertsPreventionPage
-          activeCall={callSession.activeCall}
-          isStreaming={callSession.isStreaming}
-          currentRiskScore={callSession.currentRiskScore}
-          isFrozen={callSession.isFrozen}
-          onTriggerFreeze={callSession.triggerFreeze}
-          onTriggerMfa={callSession.triggerMfa}
-        />
-      )}
-
-      {activeTab === 'privacy' && <PrivacyCompliancePage />}
     </div>
   );
 }

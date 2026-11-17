@@ -4,10 +4,6 @@ export const TAB_ROUTES = {
   'mic-analysis': '/microphone-analysis',
   telephony: '/telephony-link',
   history: '/history',
-  context: '/context-analysis',
-  risk: '/risk-assessment',
-  alerts: '/alerts-prevention',
-  privacy: '/privacy-compliance',
 };
 
 export const ROUTE_TO_TAB = {
@@ -24,14 +20,6 @@ export const ROUTE_TO_TAB = {
   '/live-connectivity': 'telephony',
   '/history': 'history',
   '/audit-history': 'history',
-  '/context': 'context',
-  '/context-analysis': 'context',
-  '/risk': 'risk',
-  '/risk-assessment': 'risk',
-  '/alerts': 'alerts',
-  '/alerts-prevention': 'alerts',
-  '/privacy': 'privacy',
-  '/privacy-compliance': 'privacy',
 };
 
 export function getInitialTab() {

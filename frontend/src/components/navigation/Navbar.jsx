@@ -3,7 +3,7 @@ import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../core/theme/ThemeContext';
 import './Navbar.css';
 
-export function Navbar({ activeTab, onSelectTab, _isStreaming }) {
+export function Navbar({ activeTab, onSelectTab }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
