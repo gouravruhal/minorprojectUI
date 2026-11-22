@@ -1,7 +1,7 @@
 """
 Forensic Stream & Real-Time Call Analysis Service.
 Coordinates AudioPreprocessor, UnifiedForensicFeatureExtractor, ForensicDetectionModel,
-SpeakerConsistencyTracker, and ForensicRiskEngine for real-time call telemetry.
+VIP Speaker Verifier, and ForensicRiskEngine for real-time call telemetry.
 """
 from typing import Dict, Any, Optional, Tuple
 import os, time, uuid
@@ -11,7 +11,7 @@ import torch
 from AI.data.preprocessing_pipeline import AudioPreprocessor
 from AI.features.unified_extractor import UnifiedForensicFeatureExtractor
 from AI.models.forensic_classifier import ForensicDetectionModel
-from AI.inference.speaker_verifier import SpeakerConsistencyTracker
+from AI.inference.speaker_verifier import SpeakerConsistencyTracker, verify_against_vip, get_enrolled_vip_catalog
 from AI.inference.calibrator import PhysicsGuidedCalibrator
 from backend.app.services.risk_engine import ForensicRiskEngine
 from backend.app.services.multi_segment_aggregator import aggregate_segments
@@ -54,7 +54,7 @@ class ForensicStreamService:
     def close_call_session(self, call_id: str):
         self.active_calls.pop(call_id, None)
 
-    def _infer_window(self, chunk: np.ndarray) -> Tuple[float, np.ndarray, Dict[str, float]]:
+    def _infer_window(self, chunk: np.ndarray) -> Tuple[float, np.ndarray, Dict[str, float], Dict[str, float]]:
         feats = self.extractor.extract_features(chunk)
         c_t = torch.tensor(np.stack([feats["lfcc"], feats["mfcc"]])).unsqueeze(0).float()
         s_t = torch.tensor(np.stack([feats["spectrogram"], feats["phase_derivative"]])).unsqueeze(0).float()
@@ -65,7 +65,7 @@ class ForensicStreamService:
         emb = out["forensic_embedding"].squeeze().cpu().numpy()
         raw_attrs = {k: float(v.squeeze().item()) for k, v in out["attributions"].items()}
         p_spoof, attributions = self.calibrator.calibrate(raw_p, raw_attrs, feats, chunk, sr=16000)
-        return p_spoof, emb, attributions
+        return p_spoof, emb, attributions, feats["prosody"]
 
     def analyze_full_call(self, contents: bytes, filename: Optional[str] = None, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         t_start = time.perf_counter()
@@ -77,13 +77,22 @@ class ForensicStreamService:
         tracker = SpeakerConsistencyTracker()
         risk_engine = ForensicRiskEngine()
         segments = []
+        claimed_vip = (context or {}).get("claimed_vip") or (context or {}).get("claimed_identity")
 
         for idx, (chunk, s_sec, e_sec) in enumerate(windows):
-            p_spoof, emb, attributions = self._infer_window(chunk)
+            p_spoof, emb, attributions, prosody = self._infer_window(chunk)
             spk_res = tracker.update_with_chunk(emb, spoof_prob=p_spoof)
+            vip_res = verify_against_vip(emb, claimed_vip_id=claimed_vip)
+            spk_metrics = {
+                "voice_swap_detected": spk_res["voice_swap_detected"],
+                "speaker_drift": spk_res["speaker_drift"],
+                "impersonation_detected": vip_res["impersonation_detected"],
+                "voiceprint_match_pct": vip_res["voiceprint_match_pct"],
+                "claimed_vip": claimed_vip
+            }
             r_res = risk_engine.compute_risk(
-                spoof_prob=p_spoof, attributions=attributions, speaker_drift=spk_res["speaker_drift"],
-                voice_swap_detected=spk_res["voice_swap_detected"], context=context
+                spoof_prob=p_spoof, attributions=attributions, dsp_features=prosody,
+                speaker_metrics=spk_metrics, context=context
             )
             segments.append({
                 "segment_index": idx, "start_sec": s_sec, "end_sec": e_sec,
@@ -92,54 +101,51 @@ class ForensicStreamService:
                 "threat_tier": r_res["threat_tier"], "speaker_drift": spk_res["speaker_drift"],
                 "voice_swap_detected": spk_res["voice_swap_detected"],
                 "attributions": {
-                    "spectral_anomaly": round(attributions["spectral_score"] * 100.0, 1),
-                    "phase_discontinuity": round(attributions["phase_score"] * 100.0, 1),
-                    "prosodic_unnaturalness": round(attributions["prosodic_score"] * 100.0, 1)
+                    "spectral_anomaly": round(attributions.get("spectral_score", 0.05) * 100.0, 1),
+                    "phase_discontinuity": round(attributions.get("phase_score", 0.04) * 100.0, 1),
+                    "prosodic_unnaturalness": round(attributions.get("prosodic_score", 0.06) * 100.0, 1)
+                },
+                "dsp_features": {
+                    "f0_pitch_hz": prosody.get("f0_mean", 135.0),
+                    "jitter_percent": prosody.get("jitter_ppq", 0.35),
+                    "shimmer_percent": prosody.get("shimmer_apq", 2.5),
+                    "pause_ratio": prosody.get("pause_ratio", 0.20)
                 }
             })
 
         speaker_summary = {
-            "enrolled": tracker.enrolled,
-            "max_drift": max([s["speaker_drift"] for s in segments]) if segments else 0.0,
+            "enrolled": tracker.enrolled, "max_drift": max([s["speaker_drift"] for s in segments]) if segments else 0.0,
             "voice_swap_detected": any(s["voice_swap_detected"] for s in segments),
-            "verification_status": "VOICE_SWAP_ALERT" if any(s["voice_swap_detected"] for s in segments) else "VERIFIED"
+            "impersonation_detected": vip_res["impersonation_detected"] if claimed_vip else False,
+            "vip_verification": vip_res, "available_vips": get_enrolled_vip_catalog()
         }
         agg = aggregate_segments(segments, speaker_summary, context=context)
-        ext = build_forensic_report_extensions(
-            sanitized, duration_sec, agg,
-            infer_fn=lambda c: self._infer_window(c)[0]
-        )
+        ext = build_forensic_report_extensions(sanitized, duration_sec, agg, infer_fn=lambda c: self._infer_window(c)[0])
         latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)
         analysis_id = f"ANL-{uuid.uuid4().hex[:10].upper()}"
 
         report = {
-            "analysis_id": analysis_id, "filename": filename or "call_audio.wav",
-            "duration_sec": duration_sec, "status": "COMPLETED", "latency_ms": latency_ms,
-            "final_risk_score": agg["final_risk_score"], "risk_score": agg["final_risk_score"],
-            "final_threat_tier": agg["final_threat_tier"], "threat_tier": agg["final_threat_tier"],
-            "is_synthetic": bool(agg["final_risk_score"] >= 50.0),
-            "action_recommendation": agg["action_recommendation"],
-            "overall_spoof_prob": agg["overall_spoof_prob"], "spoof_probability": agg["overall_spoof_prob"],
-            "peak_segment": agg["peak_segment"], "segments_count": len(segments), "segments": segments,
-            "speaker_verification": speaker_summary, "attributions": agg["attributions"], "context_applied": context or {},
-            "timeline_5s_intervals": ext["timeline_5s_intervals"],
-            "comparison_metrics": ext["comparison_metrics"],
-            "llm_risk_explanation": ext["llm_risk_explanation"],
-            "metrics": ext["metrics"]
+            "analysis_id": analysis_id, "filename": filename or "call_audio.wav", "duration_sec": duration_sec,
+            "status": "COMPLETED", "latency_ms": latency_ms, "final_risk_score": agg["final_risk_score"],
+            "risk_score": agg["final_risk_score"], "final_threat_tier": agg["final_threat_tier"],
+            "threat_tier": agg["final_threat_tier"], "is_synthetic": bool(agg["final_risk_score"] >= 50.0),
+            "action_recommendation": agg["action_recommendation"], "overall_spoof_prob": agg["overall_spoof_prob"],
+            "spoof_probability": agg["overall_spoof_prob"], "segments_count": len(segments), "segments": segments,
+            "speaker_verification": speaker_summary, "attributions": agg["attributions"],
+            "context_applied": context or {}, "risk_breakdown": segments[-1]["risk_score"] if segments else {},
+            "multi_layer_analysis": segments[-1]["dsp_features"] if segments else {},
+            "timeline_5s_intervals": ext["timeline_5s_intervals"], "comparison_metrics": ext["comparison_metrics"],
+            "llm_risk_explanation": ext["llm_risk_explanation"], "metrics": ext["metrics"]
         }
         try:
             repository.save_analysis({
-                "analysis_id": analysis_id, "session_id": (context or {}).get("call_id"),
-                "mode": "telecom_rest", "filename": filename, "label": agg["final_threat_tier"],
-                "confidence": round(agg["overall_spoof_prob"] / 100.0, 2),
+                "analysis_id": analysis_id, "session_id": (context or {}).get("call_id"), "mode": "telecom_rest",
+                "filename": filename, "label": agg["final_threat_tier"], "confidence": round(agg["overall_spoof_prob"] / 100.0, 2),
                 "synthetic_probability": agg["overall_spoof_prob"], "is_synthetic": bool(agg["final_risk_score"] >= 50.0),
-                "status": "success", "processing_time_ms": latency_ms,
-                "model_identifier": "voiceshield-deep-fusion-v2", "disclaimer": "Forensic estimation.",
-                "segments_count": len(segments), "segments": segments,
-                "timeline_5s_intervals": ext["timeline_5s_intervals"],
-                "comparison_metrics": ext["comparison_metrics"],
-                "llm_risk_explanation": ext["llm_risk_explanation"],
-                "metrics": ext["metrics"]
+                "status": "success", "processing_time_ms": latency_ms, "model_identifier": "voiceshield-deep-fusion-v2",
+                "disclaimer": "Forensic estimation.", "segments_count": len(segments), "segments": segments,
+                "timeline_5s_intervals": ext["timeline_5s_intervals"], "comparison_metrics": ext["comparison_metrics"],
+                "llm_risk_explanation": ext["llm_risk_explanation"], "metrics": ext["metrics"]
             })
         except Exception:
             pass
@@ -157,12 +163,21 @@ class ForensicStreamService:
         t0 = time.perf_counter()
         analysis_window = session["pcm_buffer"][-64000:]
         waveform = self.preprocessor.temporal_framing(analysis_window, mode="eval")
-        p_spoof, emb, attributions = self._infer_window(waveform)
+        p_spoof, emb, attributions, prosody = self._infer_window(waveform)
 
         spk_res = session["speaker_tracker"].update_with_chunk(emb, spoof_prob=p_spoof)
+        claimed_vip = session["context"].get("claimed_vip") or session["context"].get("claimed_identity")
+        vip_res = verify_against_vip(emb, claimed_vip_id=claimed_vip)
+        spk_metrics = {
+            "voice_swap_detected": spk_res["voice_swap_detected"],
+            "speaker_drift": spk_res["speaker_drift"],
+            "impersonation_detected": vip_res["impersonation_detected"],
+            "voiceprint_match_pct": vip_res["voiceprint_match_pct"],
+            "claimed_vip": claimed_vip
+        }
         r_res = session["risk_engine"].compute_risk(
-            spoof_prob=p_spoof, attributions=attributions, speaker_drift=spk_res["speaker_drift"],
-            voice_swap_detected=spk_res["voice_swap_detected"], context=session["context"]
+            spoof_prob=p_spoof, attributions=attributions, dsp_features=prosody,
+            speaker_metrics=spk_metrics, context=session["context"]
         )
         session["frame_count"] += 1
         session["pcm_buffer"] = session["pcm_buffer"][-48000:]
@@ -172,7 +187,14 @@ class ForensicStreamService:
             "latency_ms": round((time.perf_counter() - t0) * 1000.0, 1),
             "threat_tier": r_res["threat_tier"], "risk_score": r_res["risk_score"],
             "action": r_res["action_recommendation"], "voice_swap": spk_res["voice_swap_detected"],
-            "speaker_status": spk_res["verification_status"], "components": r_res["components"]
+            "speaker_status": vip_res["status"] if claimed_vip else spk_res["verification_status"],
+            "vip_verification": vip_res, "risk_breakdown": r_res["risk_breakdown"],
+            "dsp_features": {
+                "f0_pitch_hz": prosody.get("f0_mean", 135.0),
+                "jitter_percent": prosody.get("jitter_ppq", 0.35),
+                "shimmer_percent": prosody.get("shimmer_apq", 2.5),
+                "pause_ratio": prosody.get("pause_ratio", 0.20)
+            }
         }
 
 forensic_stream_service = ForensicStreamService()

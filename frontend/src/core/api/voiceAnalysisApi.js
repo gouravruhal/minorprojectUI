@@ -85,7 +85,13 @@ export async function analyzeAudioEnterprise(file, context = {}) {
   formData.append('transaction_sensitivity', context.transactionSensitivity || 'high');
   formData.append('caller_trust_level', context.callerTrustLevel || 'standard');
   formData.append('unusual_location_or_voip_flag', context.unusualLocationOrVoipFlag ? 'true' : 'false');
-  if (context.callerId) formData.append('caller_id', context.callerId);
+  formData.append('route_type', context.route_type || context.routeType || 'cellular');
+  formData.append('transaction_amount', String(context.transaction_amount || context.transactionAmount || 0));
+  formData.append('known_contact', String(context.known_contact !== false && context.knownContact !== false));
+  formData.append('claimed_identity', context.claimed_identity || context.claimedIdentity || '');
+  if (context.callerId || context.caller_id) {
+    formData.append('caller_id', context.callerId || context.caller_id);
+  }
 
   const res = await fetch(`${API_BASE}/v1/analyze-audio`, {
     method: 'POST',

@@ -1,7 +1,7 @@
 /**
  * VoiceShield AI - Real-time Laptop Microphone 2-Second Chunk & Full Session Recorder
  * Captures live microphone audio, evaluates 2.0s rolling slices via neural backend,
- * and compiles the full session audio into a unified WAV recording upon stop.
+ * passes context metadata, and compiles the full session audio upon stop.
  */
 
 let activeStream = null;
@@ -27,12 +27,12 @@ function encodeWavBlob(samples, sampleRate = 16000) {
   writeString(8, 'WAVE');
   writeString(12, 'fmt ');
   view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM format
-  view.setUint16(22, 1, true); // mono
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
   view.setUint32(24, sampleRate, true);
   view.setUint32(28, sampleRate * 2, true);
-  view.setUint16(32, 2, true); // block align
-  view.setUint16(34, 16, true); // 16 bits
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
   writeString(36, 'data');
   view.setUint32(40, samples.length * 2, true);
 
@@ -45,7 +45,7 @@ function encodeWavBlob(samples, sampleRate = 16000) {
   return new Blob([buffer], { type: 'audio/wav' });
 }
 
-export async function startMicStream(onChunkEvaluated, onAudioLevel) {
+export async function startMicStream(onChunkEvaluated, onAudioLevel, getContextPayload) {
   stopMicStream();
   pcmBuffer = [];
   allSessionSamples = [];
@@ -54,12 +54,7 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel) {
 
   try {
     activeStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        channelCount: 1,
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false
-      }
+      audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false }
     });
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -67,15 +62,13 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel) {
     const sampleRate = audioContext.sampleRate || 48000;
     const source = audioContext.createMediaStreamSource(activeStream);
 
-    // Buffer size 4096 => process live mic PCM
     scriptNode = audioContext.createScriptProcessor(4096, 1, 1);
-    const targetChunkSamples = Math.round(sampleRate * 2.0); // Exact 2.0s chunk at hardware rate
+    const targetChunkSamples = Math.round(sampleRate * 2.0);
 
     scriptNode.onaudioprocess = async (e) => {
       if (!isRecording) return;
       const input = e.inputBuffer.getChannelData(0);
 
-      // Volume calculation for level meter
       let sum = 0;
       for (let i = 0; i < input.length; i++) {
         sum += input[i] * input[i];
@@ -90,17 +83,18 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel) {
         chunkCounter += 1;
         const currentCount = chunkCounter;
         const wavBlob = encodeWavBlob(slice, sampleRate);
+        const ctx = getContextPayload ? getContextPayload() : {};
 
         try {
           const formData = new FormData();
           formData.append('file', wavBlob, `mic_stream_t${currentCount * 2}s.wav`);
-          formData.append('caller_id', 'LAPTOP_MIC_LIVE');
+          formData.append('caller_id', ctx.callerId || 'LAPTOP_MIC_LIVE');
+          formData.append('route_type', ctx.routeType || 'cellular');
+          formData.append('transaction_amount', String(ctx.transactionAmount || 0));
+          formData.append('known_contact', String(ctx.knownContact !== false));
+          formData.append('claimed_identity', ctx.claimedIdentity || '');
 
-          const res = await fetch('/api/v1/analyze-audio', {
-            method: 'POST',
-            body: formData
-          });
-
+          const res = await fetch('/api/v1/analyze-audio', { method: 'POST', body: formData });
           if (res.ok) {
             const data = await res.json();
             onChunkEvaluated?.({
@@ -108,16 +102,15 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel) {
               timestampSec: currentCount * 2.0,
               timeLabel: new Date().toLocaleTimeString(),
               riskScore: Number(data.final_risk_score ?? data.risk_score ?? 10.0),
-              threatTier: data.final_threat_tier ?? data.threat_tier ?? 'LOW',
+              threatTier: data.final_threat_tier ?? data.threat_tier ?? 'SAFE',
               isSynthetic: Boolean(data.is_synthetic || (data.final_risk_score >= 50)),
-              attributions: data.attributions || {
-                spectral_score: 0.05,
-                phase_score: 0.04,
-                prosodic_score: 0.06
-              },
+              attributions: data.attributions || {},
+              riskBreakdown: data.risk_breakdown || null,
+              dspFeatures: data.multi_layer_analysis || data.dsp_features || null,
+              speakerVerification: data.speaker_verification || null,
               speakerDrift: data.speaker_verification?.max_drift ?? 0.04,
               latencyMs: data.latency_ms ?? 35,
-              action: data.action_recommendation ?? 'CONTINUE_MONITORING'
+              action: data.action_recommendation ?? data.action ?? 'CONTINUE_MONITORING'
             });
           }
         } catch (err) {
