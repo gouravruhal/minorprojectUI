@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, ArrowRight, Activity } from 'lucide-react';
+import { ShieldAlert, ArrowRight, Activity, Layers, ExternalLink } from 'lucide-react';
 
 export function HeroSection({ onLaunchConsole, onLaunchPipeline }) {
   return (
@@ -32,6 +32,18 @@ export function HeroSection({ onLaunchConsole, onLaunchPipeline }) {
           <ShieldAlert size={18} />
           <span>Inspect Architecture & Defense Pipeline</span>
         </button>
+
+        <a 
+          id="hero-view-slides-btn"
+          className="btn-outline hero-btn flex-center gap-1"
+          href="http://localhost:8000/slides"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Layers size={17} />
+          <span>Architecture & Dataflow Slides</span>
+          <ExternalLink size={14} />
+        </a>
       </div>
 
       <div className="hero-metrics-grid">

@@ -3,8 +3,10 @@ VoiceShield AI Voice Analysis FastAPI Backend Server.
 Production entrypoint for live audio streams, forensic uploads, telephony bridge, and security response.
 """
 from contextlib import asynccontextmanager
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from backend.app.core.config import CORS_ORIGINS, BACKEND_HOST, BACKEND_PORT
 from backend.app.database.db import init_db
@@ -58,6 +60,10 @@ app.include_router(context_router)
 app.include_router(telephony_router)
 app.include_router(security_router)
 app.include_router(sdk_router)
+
+SLIDES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "architecture_slides")
+if os.path.exists(SLIDES_DIR):
+    app.mount("/slides", StaticFiles(directory=SLIDES_DIR, html=True), name="slides")
 
 if __name__ == "__main__":
     import uvicorn

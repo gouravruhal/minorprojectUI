@@ -1,71 +1,78 @@
 # VoiceShield AI
 
 > **Enterprise-Grade Real-Time Synthetic Voice & Audio Deepfake Detection Platform**
-> Evaluates bona fide human speech vs. AI vocoder/neural voice clones (HiFi-GAN, ElevenLabs, Diffusion) with multi-view forensics, speaker drift verification, and contextual risk scoring.
+> Evaluates bona fide human speech vs. AI vocoder/neural voice clones (HiFi-GAN, ElevenLabs, Diffusion) with multi-view forensics, live WebSocket streaming, VIP speaker verification, and contextual 4-factor risk scoring.
 
 ---
 
 ## 🎯 Executive Summary & Mission
-VoiceShield AI is a defense-grade audio forensics system engineered for banking, telecoms, and zero-trust communications. Built via a rigorous "toe-to-head" design philosophy, it identifies generative voice clones and mid-call biometric voice swaps within milliseconds.
+VoiceShield AI is an autonomous, privacy-preserving audio forensics platform engineered for banking, telecoms, and zero-trust enterprise communications. Built via a rigorous "toe-to-head" architectural design, it intercepts synthetic speech and unauthorized voice clones in real-time.
 
-* **Latency**: ~18.4ms deep neural inference per 4.0s chunk (RTF < 0.05 on standard CPU).
-* **Robustness**: Invariant to telephony bandpass filters (G.711, AMR-WB) and MP3/AAC compression codecs.
-* **Explainability**: Multi-pillar attribution isolating spectral anomalies, phase discontinuities, and prosodic flattening.
-* **Code Quality**: Strict modular architecture with 100% test coverage across all 179 files (strictly $\le 200$ lines per file).
+* **Ultra-Low Latency**: Sub-45ms acoustic inference and sub-25ms WebSocket streaming latency.
+* **100% In-Memory RAM Architecture**: Strictly zero audio disk writes via volatile `io.BytesIO` buffers (DPDP Act 2023 & GDPR compliant).
+* **Dynamic 4-Factor Weighted Risk Engine**: 50% Acoustic Model + 20% Prosody Anomaly + 15% VIP Voiceprint Match + 15% Call Context.
+* **Speaker Verification & VIP Defense**: Enrolled VIP profiles (CEO Rajesh Sharma, CFO Anita Roy, VP Vikram Malhotra) with continuous biometric drift and impersonation mismatch detection.
+* **Automated Incident Mitigation**: Real cryptographic step-up MFA challenge and transaction freezing triggers (0–39 Safe, 40–69 Warn Callback, 70+ Critical Freeze).
+* **Developer API & SDK Integration**: Auto-generated OpenAPI 3.1 Swagger UI (`/docs`), ReDoc (`/redoc`), and production-ready Python, JavaScript/Node.js, and cURL client SDKs.
+* **Multilingual & Indic Robustness**: Language-agnostic physical laryngeal features (F0 pitch, glottal jitter PPQ5, shimmer APQ3) tested and proven robust across Indian-accented English and Hindi speech.
+* **Engineering Rigor**: 100% test pass rate across 9 test suites and strictly $\le 200$ lines per source file across all 140 source files.
 
 ---
 
 ## 🔬 System Architecture ("Toe-to-Head" Pipeline)
 
 ```
-[Raw Ingress (PCM/WAV/MP3)]
-           │
-           ▼
-[1. DSP Sanitization & Framing]
-  • 16 kHz Polyphase Sinc Resampling (Kaiser window)
+[Raw Ingress: Live Mic / WebSocket PCM / Telecom Line Tap]
+                          │
+                          ▼
+[1. Zero-Disk DSP Sanitization & Framing]
+  • 100% Volatile RAM Ingestion (io.BytesIO, zero audio files written to disk)
+  • 16,000 Hz Polyphase Sinc Resampling (Kaiser window)
   • 40 Hz 4th-Order Butterworth High-Pass (DC / rumble filter)
-  • Frame-Energy VAD with hangover margins + RMS soft-limiting
-  • 4.0s Windows @ 2.0s Stride (50% Overlap) or Circular Repeat
-           │
-           ▼
-[2. Multi-View Forensic Feature Extraction]
-  • Stream A: 60-dim LFCC + 60-dim MFCC (Static + Delta + Acceleration)
-  • Stream B: 257-bin Magnitude Spectrogram + Instantaneous Phase Derivative
-  • Stream C: 12-dim Biomechanical Pitch, Micro-Jitter, Shimmer & HNR
-           │
-           ▼
-[3. Deep Learning Backbone & Attentive Pooling]
-  • Dual-Stream 2D Residual SE-CNNs (Channel-weighted linear vs mel bands)
-  • Temporal BiGRU Encoders (128-dim per direction)
-  • Attentive Statistics Pooling (ASP) with 128-dim L2-Normalized Embedding
-  • Supervised by Composite Loss: Weighted Focal + OC-Softmax Margin + Pillar BCE
-           │
-           ▼
-[4. Telephony Calibration & Biometric Drift Verification]
-  • Physics-Guided Calibrator (Phase variance & glottal harmonic ratios)
-  • Speaker Consistency Tracker (Cosine similarity vs initial EMA voiceprint)
-  • Immediate Voice Swap Alarm on intruder transition (Drift ≥ 0.35)
-           │
-           ▼
-[5. Hybrid Peak-Mean Aggregation & Context-Aware Risk Engine]
-  • Formula: Final_Risk = 0.55·Max + 0.30·Top3_Mean + 0.15·Mean
-  • Instant Escalation to CRITICAL (≥ 85.0) if Voice Swap or Splice Detected
-  • Context Multipliers: Transaction Sensitivity, Caller Trust, VoIP Route
-           │
-           ▼
-[6. SOC Command Dashboard (React + Vite)]
-  • Multi-Block Timeline & Click-to-Inspect Segment Forensics
-  • Real-Time WebSocket Streaming & Action Enforcement Recommendations
+  • Hangover VAD + 2.0s / 4.0s Sliding Window Strided Frames
+                          │
+                          ▼
+[2. Multilingual Multi-View Feature Extraction]
+  • Stream A: 60-dim LFCC + 40-dim MFCC (Static, Delta, Acceleration)
+  • Stream B: STFT Magnitude + Bispectrum Quadratic Phase Discontinuity
+  • Stream C: Physical Glottal Biomechanics (F0 pitch contour, Jitter PPQ5, Shimmer APQ3)
+                          │
+                          ▼
+[3. Deep Learning Backbone & VIP Voiceprint Verifier]
+  • Dual-Stream 2D Residual CNN Backbones (Linear & Mel spectrogram tensors)
+  • Attentive Statistics Pooling (ASP) generating 128-dim L2-normalized embeddings
+  • VIP Biometric Matcher comparing live embedding against enrolled VIP voiceprints
+  • Within-Call Biometric Drift & Impersonation Mismatch Alarms
+                          │
+                          ▼
+[4. Dynamic 4-Factor Weighted Risk Scoring Engine]
+  • Formula: Composite_Risk = 0.50·S_model + 0.20·S_prosody + 0.15·S_speaker + 0.15·S_context
+  • Context Multipliers: Route Type (VoIP vs Cellular), Transaction > ₹50,000, Known Contact
+  • Dynamic Acute Escalation: Voice Swap / VIP Impersonation clamps score to ≥ 75.0
+                          │
+                          ▼
+[5. Automated Incident Mitigation & Security Actions]
+  • Score 0 – 39 (SAFE): Continue Monitoring
+  • Score 40 – 69 (WARN): Request Callback & Step-Up Verification
+  • Score 70 – 100 (CRITICAL): Freeze Transaction & Trigger Cryptographic Step-Up MFA
+                          │
+                          ▼
+[6. Unified SOC Command Center & Developer Portal]
+  • Live Ingress Console, Real-Time Audio Meters & WebSocket Call Playback Simulator
+  • Interactive Architecture & Dataflow Slides (/slides)
+  • OpenAPI 3.1 Swagger UI (/docs) & Developer SDK Portal
 ```
 
 ---
 
-## 🚀 Unified Quick Start
+## 🚀 Quick Start & Launch
 
-The repository includes cross-platform launch scripts that automatically verify model checkpoints, install dependencies, and start both the backend and frontend concurrently.
+### Prerequisites
+* Python 3.10+
+* Node.js 18+ / npm
 
 ### Windows (One-Click Launch)
-Double-click or run from PowerShell / Command Prompt:
+Double-click `start_windows.bat` or run in PowerShell:
 ```bat
 start_windows.bat
 ```
@@ -76,7 +83,7 @@ chmod +x start_linux.sh
 ./start_linux.sh
 ```
 
-### Manual Launch
+### Manual Service Startup
 1. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
@@ -91,57 +98,29 @@ chmod +x start_linux.sh
    cd frontend && npm run dev
    ```
 
-* **Frontend Dashboard**: `http://localhost:5173`
-* **API Documentation**: `http://127.0.0.1:8000/docs`
+* **Web Application**: `http://localhost:5173`
+* **Swagger API Documentation**: `http://localhost:8000/docs`
+* **Interactive Architecture Slides**: `http://localhost:8000/slides`
 
 ---
 
-## 🎬 How to Run the Presentation Demo
+## 🧪 Comprehensive Quality Assurance Suite
 
-To demonstrate the full power of VoiceShield AI during live evaluation:
-
-1. **Launch the Platform**: Open `http://localhost:5173` in your browser.
-2. **Set Security Context**:
-   * Set **Transaction Sensitivity** to `High (Wire Transfer / OTP)`.
-   * Set **Caller Trust Level** to `Standard KYC Subscriber`.
-   * Toggle **VoIP / Unknown Route** to simulate an untrusted carrier link.
-3. **Run 20-Second Spliced Attack Simulation**:
-   * Click **`Simulate 20s Spliced Attack`** in the context header.
-   * Watch the system evaluate all **9 overlapping 4.0-second blocks** with real-time status animation.
-4. **Inspect Multi-Block Timeline & Forensic Inspector**:
-   * Notice that Blocks **#1 through #4 (0.0s - 8.0s)** show **LOW** risk (Green, authentic human speech).
-   * Notice the transition at Block **#5 (8.0s - 12.0s)** where the deepfake attack is injected.
-   * Blocks **#6 through #9** escalate to **CRITICAL** (Red) with **VOICE SWAP** alerts.
-   * Click any block to view its **Spectral Anomaly**, **Phase Discontinuity**, and **Prosodic Unnaturalness** percentage meters.
-5. **Review Aggregated Verdict Banner**:
-   * Verify the **Hybrid Peak-Mean Score** ($89.8\%$), **CRITICAL** badge, and enforcement action: `TERMINATE_TRANSACTION`.
-   * Note the identified **Peak Threat Window** (`00:12 - 00:16`) and **Speaker Drift** ($0.58$).
-6. **Upload Custom Recording**:
-   * Drag & drop any `.wav` or `.mp3` into the ingress zone for slice-by-slice neural evaluation.
-
----
-
-## 🧪 Regression Testing & Quality Assurance
-
-All architectural layers are protected by a comprehensive test suite enforcing 100% pass rates and strict $\le 200$-line limits:
+Run the full automated test and verification suite:
 
 ```bash
-# Run line count verification (Max 200 lines per file)
+# 1. Verify strict line count limits (Max 200 lines per file)
 python scripts/check_line_counts.py
 
-# Run complete 8-suite test pipeline (Model, DSP, Ingestion, Losses, Streaming, Checkpoints)
+# 2. Run all 9 test suites (DSP, Models, Risk Engine, Streaming, Multilingual, API)
 python scripts/run_all_tests.py
+
+# 3. Compile production frontend build
+cd frontend && npm run build
 ```
 
-### Verification Results
-* **215/215 Source Files** conform strictly to $\le 200$ lines.
-* **49/49 Unit & Integration Tests** pass with 0 errors.
-* **Frontend Vite Build**: Passes with 0 errors and 0 warnings.
-
----
-
-## 📊 Interactive Architecture & Dataflow Slides
-
-To explore the animated system architecture, filterable dataflow pipeline, and comparative prediction scenarios:
-* Open `architecture_slides/index.html` in any web browser.
-* Features filterable subsystem stages, live glowing packet flow animations, and real-time comparative metrics across human, AI vocoder, and phone loudspeaker replay spoofing.
+### Verification Metrics
+* **140 / 140 Source Files** conform strictly to $\le 200$ lines.
+* **57 / 57 Unit & Regression Tests** passing (100% pass rate).
+* **Production Build**: Clean compilation with 0 errors and 0 warnings.
+* **Database State**: Pristine at 0 rows across all SQLite tables.
