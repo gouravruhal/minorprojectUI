@@ -24,6 +24,7 @@ def main():
     run_step("AI/tests/test_training_and_metrics.py", "Forensic Losses, Augmentation & Biometric Metric Tests")
     run_step("AI/tests/test_realtime_backend.py", "Real-Time Streaming, Speaker Drift & Risk Engine Tests")
     run_step("AI/tests/test_trained_inference.py", "Trained Checkpoint & Acoustic Discrimination Tests")
+    run_step("AI/tests/test_multilingual_robustness.py", "Multilingual Indian English & Hindi Robustness Tests")
     run_step("backend/tests/test_api.py", "Backend API, SQLite Database & WebSocket Tests")
     print("\n" + "*" * 60)
     print("ALL TESTS AND VERIFICATIONS COMPLETED SUCCESSFULLY!")

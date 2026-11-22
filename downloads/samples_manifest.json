@@ -49,6 +49,22 @@
       "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/HGAN_V1/e2e_hgan_v1_5.wav",
       "local_path": "C:\\codes\\Project\\downloads\\ai_sample_5.wav",
       "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\ai_sample_5.wav"
+    },
+    {
+      "filename": "ai_indian_english_clone.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 3.5,
+      "sample_rate": 16000,
+      "description": "Neural Vocoder AI Clone (Indian English Rajesh Voiceprint)",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_indian_english_clone.wav"
+    },
+    {
+      "filename": "ai_hindi_vocoder_clone.wav",
+      "type": "AI_SYNTHETIC",
+      "duration_sec": 3.5,
+      "sample_rate": 16000,
+      "description": "Neural Vocoder Synthetic Hindi Clone (Spoofed Anita Voiceprint)",
+      "local_path": "C:\\codes\\Project\\downloads\\ai_hindi_vocoder_clone.wav"
     }
   ],
   "human_samples": [
@@ -101,6 +117,22 @@
       "source_url": "https://raw.githubusercontent.com/jik876/hifi-gan-demo/master/samples/e2e/GT/e2e_gt_5.wav",
       "local_path": "C:\\codes\\Project\\downloads\\human_sample_5.wav",
       "downloads_path": "C:\\Users\\LENOVO\\Downloads\\VoiceShield_Samples\\human_sample_5.wav"
+    },
+    {
+      "filename": "human_indian_english_rajesh.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 3.5,
+      "sample_rate": 16000,
+      "description": "Indian-Accented English (CEO Rajesh Sharma)",
+      "local_path": "C:\\codes\\Project\\downloads\\human_indian_english_rajesh.wav"
+    },
+    {
+      "filename": "human_hindi_anita.wav",
+      "type": "BONA_FIDE_HUMAN",
+      "duration_sec": 3.5,
+      "sample_rate": 16000,
+      "description": "Hindi Speech Authentic Phonation (CFO Anita Roy)",
+      "local_path": "C:\\codes\\Project\\downloads\\human_hindi_anita.wav"
     }
   ]
 }
