@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
 import { ShieldCheck, PhoneForwarded, Lock, Key, CheckCircle2 } from 'lucide-react';
+import { dispatchMfaChallenge, verifyMfaChallenge } from '../../../core/api/voiceAnalysisApi';
 
 export function MicAutomatedResponseBanner({ latestResult, isStreaming }) {
-  const [mfaTriggered, setMfaTriggered] = useState(false);
-  const [mfaResolved, setMfaResolved] = useState(false);
+  const [challengeId, setChallengeId] = useState(null);
+  const [mfaStatus, setMfaStatus] = useState('IDLE');
 
   const risk = latestResult ? Number(latestResult.riskScore ?? 0) : 0;
   const tier = latestResult ? latestResult.threatTier : 'SAFE';
   const isCritical = risk >= 70 || tier === 'CRITICAL';
   const isWarn = (risk >= 40 && !isCritical) || tier === 'WARN';
 
-  const handleSimulateMFA = () => {
-    setMfaTriggered(true);
-    setTimeout(() => {
-      setMfaResolved(true);
-    }, 2500);
+  const handleSimulateMFA = async () => {
+    setMfaStatus('DISPATCHING');
+    try {
+      const chal = await dispatchMfaChallenge('ACTIVE_CALL', 'SUBSCRIBER_LINE');
+      setChallengeId(chal.challenge_id);
+      const res = await verifyMfaChallenge(chal.challenge_id);
+      if (res.status === 'VERIFIED') {
+        setMfaStatus('VERIFIED');
+      } else {
+        setMfaStatus('FAILED');
+      }
+    } catch {
+      setMfaStatus('FAILED');
+    }
   };
 
   const handleResetLock = () => {
-    setMfaTriggered(false);
-    setMfaResolved(false);
+    setChallengeId(null);
+    setMfaStatus('IDLE');
   };
 
   if (!isStreaming && !latestResult) return null;
@@ -69,22 +79,24 @@ export function MicAutomatedResponseBanner({ latestResult, isStreaming }) {
 
           {isCritical && (
             <div className="banner-action-buttons">
-              {!mfaTriggered ? (
+              {mfaStatus === 'IDLE' ? (
                 <button type="button" className="btn-clay-danger btn-sm" onClick={handleSimulateMFA}>
                   <Key size={14} className="mr-1 inline" /> Trigger Instant Step-Up MFA Challenge
                 </button>
-              ) : mfaResolved ? (
+              ) : mfaStatus === 'DISPATCHING' ? (
+                <div className="mfa-pending-row text-xs text-warning animate-pulse">
+                  <span>Dispatching cryptographic push OTP via backend security API...</span>
+                </div>
+              ) : mfaStatus === 'VERIFIED' ? (
                 <div className="mfa-resolved-row text-xs text-safe">
                   <CheckCircle2 size={16} className="inline mr-1" />
-                  <span>Biometric Step-Up Challenge Passed by Enrolled Subscriber</span>
+                  <span>Biometric Step-Up Challenge Passed ({challengeId}). Safe Override Granted.</span>
                   <button type="button" className="btn-clay-secondary btn-xs ml-3" onClick={handleResetLock}>
                     Clear Override
                   </button>
                 </div>
               ) : (
-                <div className="mfa-pending-row text-xs text-warning animate-pulse">
-                  <span>Dispatching push notification OTP to authorized device...</span>
-                </div>
+                <span className="text-xs text-danger">MFA Verification Failed.</span>
               )}
             </div>
           )}

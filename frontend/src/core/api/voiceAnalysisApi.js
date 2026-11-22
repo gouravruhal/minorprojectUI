@@ -1,19 +1,17 @@
 /**
- * API client for VoiceShield AI real-time voice analysis and backend communication.
+ * API client for VoiceShield AI real-time voice analysis, telecom bridge, and security response.
  */
 const API_BASE = '/api';
 
 export async function createSession(mode = 'microphone', audioSource = 'laptop_microphone', userConsent = true, phoneNumber = null) {
   try {
     const res = await fetch(`${API_BASE}/voice/live/sessions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode, audio_source: audioSource, user_consent: userConsent, phone_number: phoneNumber })
     });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     return await res.json();
   } catch (err) {
-    return { session_id: 'local-' + Date.now(), mode, audio_source: audioSource, user_consent: userConsent, error: err.message };
+    return { session_id: 'local-' + Date.now(), mode, error: err.message };
   }
 }
 
@@ -21,44 +19,59 @@ export async function stopSession(sessionId) {
   try {
     const res = await fetch(`${API_BASE}/voice/live/${sessionId}/stop`, { method: 'POST' });
     return await res.json();
-  } catch (err) {
-    return { error: err.message };
-  }
+  } catch (err) { return { error: err.message }; }
 }
 
 export async function connectTelecom(sessionId, phoneNumber, consentGranted) {
   try {
     const res = await fetch(`${API_BASE}/voice-analysis/telecom/connect`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: sessionId, phone_number: phoneNumber, consent_granted: consentGranted })
     });
     return await res.json();
-  } catch (err) {
-    return { success: false, error: 'BACKEND_UNREACHABLE', message: 'Failed to connect: ' + err.message };
-  }
+  } catch (err) { return { success: false, error: err.message }; }
 }
 
-export async function disconnectTelecom(sessionId) {
+export async function disconnectTelecom() {
   try {
-    const res = await fetch(`${API_BASE}/voice-analysis/telecom/disconnect`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId })
-    });
+    const res = await fetch(`${API_BASE}/voice-analysis/telecom/disconnect`, { method: 'POST' });
     return await res.json();
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
+  } catch (err) { return { success: false, error: err.message }; }
 }
 
 export async function getTelecomStatus() {
   try {
     const res = await fetch(`${API_BASE}/voice-analysis/telecom/status`);
     return await res.json();
-  } catch {
-    return { configured: false, provider: 'Telephony Gateway', instructions: 'Offline' };
-  }
+  } catch { return { configured: false, provider: 'Telephony Gateway', instructions: 'Offline' }; }
+}
+
+export async function getTelecomDiagnostics() {
+  try {
+    const res = await fetch(`${API_BASE}/voice-analysis/telecom/diagnostics`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
+}
+
+export async function dispatchMfaChallenge(sessionId, callerId, reason) {
+  try {
+    const res = await fetch(`${API_BASE}/v1/security/challenge-mfa`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, caller_id: callerId, reason })
+    });
+    return await res.json();
+  } catch (err) { return { status: 'ERROR', error: err.message }; }
+}
+
+export async function verifyMfaChallenge(challengeId, code = '123456') {
+  try {
+    const res = await fetch(`${API_BASE}/v1/security/verify-mfa`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challenge_id: challengeId, code })
+    });
+    return await res.json();
+  } catch (err) { return { status: 'ERROR', error: err.message }; }
 }
 
 export async function uploadRecording(file, consent = true, sessionId = null) {
@@ -66,16 +79,8 @@ export async function uploadRecording(file, consent = true, sessionId = null) {
   formData.append('file', file);
   formData.append('consent', consent ? 'true' : 'false');
   if (sessionId) formData.append('session_id', sessionId);
-
-  const res = await fetch(`${API_BASE}/voice/upload`, {
-    method: 'POST',
-    body: formData
-  });
-
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
-    throw new Error(errData.detail || `Upload failed with status ${res.status}`);
-  }
+  const res = await fetch(`${API_BASE}/voice/upload`, { method: 'POST', body: formData });
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
   return await res.json();
 }
 
@@ -89,18 +94,10 @@ export async function analyzeAudioEnterprise(file, context = {}) {
   formData.append('transaction_amount', String(context.transaction_amount || context.transactionAmount || 0));
   formData.append('known_contact', String(context.known_contact !== false && context.knownContact !== false));
   formData.append('claimed_identity', context.claimed_identity || context.claimedIdentity || '');
-  if (context.callerId || context.caller_id) {
-    formData.append('caller_id', context.callerId || context.caller_id);
-  }
+  if (context.callerId || context.caller_id) formData.append('caller_id', context.callerId || context.caller_id);
 
-  const res = await fetch(`${API_BASE}/v1/analyze-audio`, {
-    method: 'POST',
-    body: formData
-  });
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
-    throw new Error(errData.detail || `Enterprise analysis failed with status ${res.status}`);
-  }
+  const res = await fetch(`${API_BASE}/v1/analyze-audio`, { method: 'POST', body: formData });
+  if (!res.ok) throw new Error(`Enterprise analysis failed: ${res.status}`);
   return await res.json();
 }
 
@@ -113,69 +110,24 @@ export async function getAnalysisResult(analysisId) {
 export async function getRecentAnalyses(limit = 15) {
   try {
     const res = await fetch(`${API_BASE}/voice/analyses/recent?limit=${limit}`);
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
-
-export async function generateContextForRecording(payload) {
-  try {
-    const res = await fetch(`${API_BASE}/context/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
-export async function getRecentContextReports(limit = 15) {
-  try {
-    const res = await fetch(`${API_BASE}/context/reports?limit=${limit}`);
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
-
-export async function checkBackendHealth() {
-  try {
-    const res = await fetch(`${API_BASE}/health`);
-    if (!res.ok) return { status: 'offline' };
-    return await res.json();
-  } catch {
-    return { status: 'offline' };
-  }
+    return res.ok ? await res.json() : [];
+  } catch { return []; }
 }
 
 export async function clearDatabase() {
   try {
     const res = await fetch(`${API_BASE}/database/clear`, { method: 'POST' });
     return await res.json();
-  } catch (err) {
-    return { status: 'error', error: err.message };
-  }
+  } catch (err) { return { status: 'error', error: err.message }; }
 }
 
-export function openVoiceAnalysisWebSocket(sessionId, onMessage, onError, onClose) {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsHost = window.location.host;
-  const wsUrl = `${protocol}//${wsHost}/api/voice/live/${sessionId}`;
-
-  const ws = new WebSocket(wsUrl);
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      onMessage?.(data);
-    } catch {}
-  };
-  ws.onerror = (err) => onError?.(err);
-  ws.onclose = () => onClose?.();
-  return ws;
+export async function generateContextForRecording(payload) {
+  try {
+    const res = await fetch(`${API_BASE}/context-analysis/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return res.ok ? await res.json() : null;
+  } catch { return null; }
 }

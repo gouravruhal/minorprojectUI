@@ -1,6 +1,6 @@
 """
 VoiceShield AI Voice Analysis FastAPI Backend Server.
-Production entrypoint for live audio streams, forensic uploads, and acoustic inference.
+Production entrypoint for live audio streams, forensic uploads, telephony bridge, and security response.
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -13,10 +13,11 @@ from backend.app.api.voice_routes import router as voice_router
 from backend.app.api.health_routes import router as health_router
 from backend.app.api.forensic_stream_routes import router as stream_router
 from backend.app.api.context_routes import router as context_router
+from backend.app.api.telephony_routes import router as telephony_router
+from backend.app.api.security_routes import router as security_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize SQLite database and clean temp directory on startup
     init_db()
     cleanup_temp_dir()
     yield
@@ -42,8 +43,9 @@ app.include_router(health_router)
 app.include_router(voice_router)
 app.include_router(stream_router)
 app.include_router(context_router)
+app.include_router(telephony_router)
+app.include_router(security_router)
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.app.main:app", host=BACKEND_HOST, port=BACKEND_PORT, reload=True)
-

@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import { Gauge, CheckCircle2, RefreshCw, Radio, Power } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Gauge, Radio, RefreshCw } from 'lucide-react';
+import { getTelecomDiagnostics } from '../../../core/api/voiceAnalysisApi';
 
 export function HardwareDiagnosticsPanel() {
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [diagnostics, setDiagnostics] = useState([]);
+  const [isPolling, setIsPolling] = useState(false);
 
-  const SPECS = [
-    { label: 'Ingress Interface', value: 'COM4 / USB-Audio-Tap-01 (UAC2)', status: 'Connected' },
-    { label: 'Line Standby Voltage', value: '-48.2 VDC (Standard On-Hook)', status: 'Optimal' },
-    { label: 'Off-Hook Detection', value: '9.4 VDC Loop Active', status: 'In-Call' },
-    { label: 'Sampling Pipeline', value: '16,000 Hz / 16-Bit Mono Linear PCM', status: 'Synchronized' },
-    { label: 'Hardware Buffer Latency', value: '< 8.4 ms Ring Latency', status: 'Ultra-Low' },
-    { label: 'Isolation Rating', value: '3,000 Vrms Galvanic Optical Barrier', status: 'Protected' }
-  ];
+  const fetchDiagnostics = useCallback(async () => {
+    setIsPolling(true);
+    try {
+      const data = await getTelecomDiagnostics();
+      if (Array.isArray(data) && data.length > 0) {
+        setDiagnostics(data);
+      }
+    } finally {
+      setIsPolling(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDiagnostics();
+  }, [fetchDiagnostics]);
 
   return (
     <div className="hardware-diagnostics-card card clay-card">
@@ -28,19 +37,18 @@ export function HardwareDiagnosticsPanel() {
           <button
             type="button"
             className="btn-clay-secondary text-xs"
-            onClick={() => {
-              setIsSimulating(true);
-              setTimeout(() => setIsSimulating(false), 900);
-            }}
+            onClick={fetchDiagnostics}
+            disabled={isPolling}
+            title="Poll active telecom tap interface"
           >
-            <RefreshCw size={12} className={isSimulating ? 'spin-anim' : ''} />
-            <span>Poll Hardware</span>
+            <RefreshCw size={12} className={isPolling ? 'spin-anim' : ''} />
+            <span>{isPolling ? 'Polling...' : 'Poll Hardware'}</span>
           </button>
         </div>
       </div>
 
       <div className="diagnostics-grid">
-        {SPECS.map((spec, idx) => (
+        {diagnostics.map((spec, idx) => (
           <div key={idx} className="spec-metric-card clay-inset">
             <div className="spec-label-row">
               <span className="spec-label">{spec.label}</span>
@@ -55,4 +63,3 @@ export function HardwareDiagnosticsPanel() {
 }
 
 export default HardwareDiagnosticsPanel;
-

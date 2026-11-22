@@ -1,5 +1,37 @@
 import React from 'react';
-import { Terminal, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Terminal } from 'lucide-react';
+
+function formatForensicDiagnosis(log, isCrit, isElev) {
+  const dsp = log.dspFeatures;
+  const isSwap = log.voiceSwap ||
+    log.speakerVerification?.voice_swap_detected ||
+    log.speakerVerification?.vip_verification?.impersonation_detected;
+
+  if (isSwap) {
+    const matchPct = log.speakerVerification?.vip_verification?.voiceprint_match_pct ?? 0;
+    return `Impersonation Mismatch: Voiceprint match ${Math.round(matchPct)}% (Threshold: 82%)`;
+  }
+
+  if (dsp) {
+    const pitch = Math.round(dsp.f0_pitch_hz ?? dsp.f0_mean ?? 0);
+    const jitter = Number(dsp.jitter_percent ?? (dsp.jitter_ppq ? dsp.jitter_ppq * 100 : 0)).toFixed(2);
+    const shimmer = Number(dsp.shimmer_percent ?? (dsp.shimmer_apq ? dsp.shimmer_apq * 100 : 0)).toFixed(2);
+    if (isCrit) {
+      return `Synthetic Vocoder: Glottal Jitter ${jitter}%, Pitch ${pitch}Hz, Flatness ${Number(dsp.spectral_flatness || 0.02).toFixed(3)}`;
+    }
+    if (isElev) {
+      const pause = Math.round((dsp.pause_ratio ?? 0) * 100);
+      return `Prosodic Discontinuity: Jitter ${jitter}%, Pause ${pause}%, Shimmer ${shimmer}%`;
+    }
+    return `Organic Phonation: Jitter ${jitter}%, Shimmer ${shimmer}%, F0 ${pitch}Hz`;
+  }
+
+  return isCrit
+    ? 'Neural Vocoder Aliasing & Glottal Jitter Suppressed'
+    : isElev
+    ? 'Elevated HNR with Phase Discontinuity Anomaly'
+    : 'Normal Laryngeal Micro-Perturbation & Natural Phonation';
+}
 
 export function MicTelemetryLogs({ logs = [] }) {
   return (
@@ -17,7 +49,7 @@ export function MicTelemetryLogs({ logs = [] }) {
       <div className="telemetry-table-container clay-inset">
         {logs.length === 0 ? (
           <div className="empty-logs-placeholder text-dim text-xs">
-            Awaiting microphone activation. Click &quot;Start Microphone Analysis&quot; above to begin live continuous acoustic inference.
+            Awaiting streaming activation. Click &quot;Start Streaming Analysis&quot; above to begin live acoustic inference.
           </div>
         ) : (
           <table className="telemetry-table">
@@ -36,11 +68,8 @@ export function MicTelemetryLogs({ logs = [] }) {
               {logs.slice(0, 50).map((log, idx) => {
                 const isCrit = log.threatTier === 'CRITICAL' || log.riskScore >= 70;
                 const isElev = log.threatTier === 'ELEVATED' || (log.riskScore >= 45 && !isCrit);
-                const diagnosis = isCrit
-                  ? 'Neural Vocoder Aliasing & Glottal Jitter Suppressed (<0.20%)'
-                  : isElev
-                  ? 'Elevated HNR with Phase Discontinuity Anomaly'
-                  : 'Normal Laryngeal Micro-Perturbation & Natural Phonation';
+                const diagnosis = formatForensicDiagnosis(log, isCrit, isElev);
+                const driftVal = log.speakerDrift ?? log.speakerVerification?.max_drift;
 
                 return (
                   <tr key={idx} className={isCrit ? 'row-alert' : ''}>
@@ -57,7 +86,7 @@ export function MicTelemetryLogs({ logs = [] }) {
                       </span>
                     </td>
                     <td className="mono-metric text-xs">
-                      Drift: {log.speakerDrift ? log.speakerDrift.toFixed(3) : '0.040'}
+                      Drift: {typeof driftVal === 'number' ? driftVal.toFixed(3) : '--'}
                     </td>
                     <td className="text-xs text-dim">
                       {diagnosis}

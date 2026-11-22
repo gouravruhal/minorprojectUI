@@ -17,13 +17,28 @@ DOWNLOADS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.
 
 @router.get("/api/v1/sample-calls")
 async def list_sample_calls():
-    """Lists available pre-recorded call samples for simulated live WebSocket playback."""
-    return [
-        {"id": "ai_sample_1.wav", "title": "AI Deepfake Call #1 (HiFi-GAN Vocoder)", "type": "synthetic", "duration_sec": 2.5},
-        {"id": "ai_sample_2.wav", "title": "AI Deepfake Call #2 (Neural Clone)", "type": "synthetic", "duration_sec": 2.5},
-        {"id": "human_sample_1.wav", "title": "Executive Call #1 (Rajesh Sharma - Phonation)", "type": "bona_fide", "duration_sec": 2.8},
-        {"id": "human_sample_2.wav", "title": "Executive Call #2 (Anita Roy - Phonation)", "type": "bona_fide", "duration_sec": 2.6}
-    ]
+    """Dynamically queries verified call audio samples available on disk for live simulation."""
+    import soundfile as sf
+    samples = []
+    if os.path.exists(DOWNLOADS_DIR):
+        for f in sorted(os.listdir(DOWNLOADS_DIR)):
+            if f.endswith(".wav"):
+                p = os.path.join(DOWNLOADS_DIR, f)
+                try:
+                    info = sf.info(p)
+                    dur = round(info.duration, 1)
+                except Exception:
+                    dur = 2.5
+                is_ai = "ai" in f.lower() or "synth" in f.lower()
+                clean_name = f.replace(".wav", "").replace("_", " ").title()
+                title = f"{'AI Clone Attack' if is_ai else 'Executive Caller'} — {clean_name}"
+                samples.append({
+                    "id": f,
+                    "title": title,
+                    "type": "synthetic" if is_ai else "bona_fide",
+                    "duration_sec": dur
+                })
+    return samples
 
 @router.get("/api/v1/sample-calls/{sample_name}/audio")
 async def get_sample_call_audio(sample_name: str):

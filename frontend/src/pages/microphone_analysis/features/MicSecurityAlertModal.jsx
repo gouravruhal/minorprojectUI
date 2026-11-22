@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import { ShieldAlert, Lock, Key, CheckCircle, X } from 'lucide-react';
+import { dispatchMfaChallenge, verifyMfaChallenge } from '../../../core/api/voiceAnalysisApi';
 
 export function MicSecurityAlertModal({ alert, onClose }) {
+  const [challengeId, setChallengeId] = useState(null);
   const [mfaStatus, setMfaStatus] = useState('IDLE');
 
   if (!alert) return null;
 
-  const handleTriggerMfa = () => {
+  const handleTriggerMfa = async () => {
     setMfaStatus('DISPATCHING');
-    setTimeout(() => {
-      setMfaStatus('VERIFIED');
-    }, 2000);
+    try {
+      const chal = await dispatchMfaChallenge(alert.call_id, 'LIVE_SUBSCRIBER', alert.reason);
+      setChallengeId(chal.challenge_id);
+      const res = await verifyMfaChallenge(chal.challenge_id);
+      if (res.status === 'VERIFIED') {
+        setMfaStatus('VERIFIED');
+      } else {
+        setMfaStatus('FAILED');
+      }
+    } catch {
+      setMfaStatus('FAILED');
+    }
   };
 
   return (
@@ -57,13 +68,15 @@ export function MicSecurityAlertModal({ alert, onClose }) {
             </button>
           ) : mfaStatus === 'DISPATCHING' ? (
             <div className="text-xs text-warning animate-pulse">
-              <span>Dispatching cryptographic token challenge to subscriber phone...</span>
+              <span>Contacting subscriber authentication gateway via REST API...</span>
             </div>
-          ) : (
+          ) : mfaStatus === 'VERIFIED' ? (
             <div className="text-xs text-safe flex-center gap-1">
               <CheckCircle size={16} />
-              <span>Step-Up MFA Challenge Successfully Verified. Safe Override Granted.</span>
+              <span>Step-Up Challenge Passed ({challengeId}). Safe Override Granted.</span>
             </div>
+          ) : (
+            <span className="text-xs text-danger">Authentication Challenge Failed.</span>
           )}
 
           <button type="button" className="btn-clay-secondary btn-sm" onClick={onClose}>

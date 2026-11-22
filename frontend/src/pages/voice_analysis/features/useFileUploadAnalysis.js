@@ -40,26 +40,19 @@ export function useFileUploadAnalysis() {
     setUploadedFile(file);
     setIsUploading(true);
     setAnalysisStage('ingest');
-    setUploadProgress(10);
+    setUploadProgress(20);
 
     try {
       const durSec = await resolveAudioDuration(file);
       const totalBlocks = durSec > 4.0 ? Math.floor((durSec - 4.0) / 2.0) + 1 : 1;
-
-      for (let c = 0; c < Math.min(totalBlocks, 8); c++) {
-        const s = c * 2;
-        const e = Math.min(s + 4, Math.round(durSec));
-        setChunkState({
-          currentChunk: c + 1, totalChunks: totalBlocks,
-          chunkRange: `00:${String(s).padStart(2, '0')} - 00:${String(e).padStart(2, '0')}`,
-          status: `Processing 4.0s overlapping window (${c + 1}/${totalBlocks})...`
-        });
-        setUploadProgress(Math.round(((c + 1) / totalBlocks) * 85));
-        await new Promise((r) => setTimeout(r, 160));
-      }
-
+      setChunkState({
+        currentChunk: 1,
+        totalChunks: totalBlocks,
+        chunkRange: `00:00 - 00:${String(Math.min(4, Math.round(durSec))).padStart(2, '0')}`,
+        status: `Ingesting ${durSec.toFixed(1)}s audio into zero-disk RAM pipeline...`
+      });
+      setUploadProgress(50);
       setAnalysisStage('llm_forensics');
-      setUploadProgress(92);
 
       let backendResult;
       try {
@@ -68,8 +61,17 @@ export function useFileUploadAnalysis() {
         backendResult = await uploadRecording(file, consent);
       }
 
+      setUploadProgress(92);
       const risk = Number(backendResult.final_risk_score ?? backendResult.risk_score ?? backendResult.synthetic_probability ?? 25.0);
       const { intervals, llmExplanation, compMetrics } = enrichForensicTelemetry(backendResult, durSec, risk);
+
+      const segments = backendResult.segments || [];
+      setChunkState({
+        currentChunk: segments.length || totalBlocks,
+        totalChunks: segments.length || totalBlocks,
+        chunkRange: `Full Stream (0s - ${Math.round(durSec)}s)`,
+        status: `Acoustic frames analyzed: ${segments.length || totalBlocks} segments.`
+      });
 
       const formatted = {
         name: file.name,
