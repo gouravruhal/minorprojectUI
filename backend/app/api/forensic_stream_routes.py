@@ -60,7 +60,8 @@ async def analyze_audio_endpoint(
     transaction_amount: float = Form(0.0),
     known_contact: bool = Form(True),
     claimed_identity: Optional[str] = Form(None),
-    caller_id: Optional[str] = Form(None)
+    caller_id: Optional[str] = Form(None),
+    model_mode: str = Form("both")
 ):
     contents = await file.read()
     if len(contents) < 512:
@@ -75,7 +76,8 @@ async def analyze_audio_endpoint(
         "known_contact": known_contact,
         "claimed_identity": claimed_identity,
         "claimed_vip": claimed_identity,
-        "caller_id": caller_id
+        "caller_id": caller_id,
+        "model_mode": model_mode
     }
 
     try:

@@ -50,6 +50,9 @@ export class LiveCallWebSocketClient {
               riskScore: Number(data.risk_score ?? 10.0),
               threatTier: data.threat_tier ?? 'SAFE',
               isSynthetic: Boolean(data.risk_score >= 50),
+              voiceDetectionRisk: Number(data.voice_detection_risk ?? data.risk_breakdown?.voice_detection_risk ?? data.risk_score ?? 10.0),
+              contextDetectionRisk: Number(data.context_detection_risk ?? data.risk_breakdown?.context_detection_risk ?? 15.0),
+              analysisMode: data.analysis_mode || 'dual_fusion',
               action: data.action ?? 'CONTINUE_MONITORING',
               riskBreakdown: data.risk_breakdown || null,
               dspFeatures: data.dsp_features || null,
@@ -88,6 +91,7 @@ export class LiveCallWebSocketClient {
           known_contact: context.knownContact !== false,
           claimed_identity: context.claimedIdentity || '',
           claimed_vip: context.claimedIdentity || '',
+          model_mode: context.modelMode || context.model_mode || 'both',
           caller_id: context.callerId || 'LIVE_STREAM_CLIENT'
         }
       }));

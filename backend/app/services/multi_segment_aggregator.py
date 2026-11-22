@@ -70,11 +70,18 @@ def aggregate_segments(
     phase_avg = round(float(np.mean(phase_list)), 1) if phase_list else 5.0
     prosodic_avg = round(float(np.mean(pros_list)), 1) if pros_list else 5.0
 
+    voice_risks = [float(s.get("voice_detection_risk", s.get("risk_breakdown", {}).get("voice_detection_risk", s["risk_score"]))) for s in segments]
+    context_risks = [float(s.get("context_detection_risk", s.get("risk_breakdown", {}).get("context_detection_risk", 15.0))) for s in segments]
+    agg_voice_risk = round(float(np.mean(voice_risks)), 1) if voice_risks else final_risk
+    agg_context_risk = round(float(np.mean(context_risks)), 1) if context_risks else 15.0
+
     return {
         "final_risk_score": final_risk,
         "final_threat_tier": threat_tier,
         "action_recommendation": action,
         "overall_spoof_prob": overall_p_spoof,
+        "voice_detection_risk": agg_voice_risk,
+        "context_detection_risk": agg_context_risk,
         "peak_segment": peak_segment,
         "segments": segments,
         "speaker_biometrics": speaker_summary,

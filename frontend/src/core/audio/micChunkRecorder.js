@@ -93,6 +93,7 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel, getContextP
           formData.append('transaction_amount', String(ctx.transactionAmount || 0));
           formData.append('known_contact', String(ctx.knownContact !== false));
           formData.append('claimed_identity', ctx.claimedIdentity || '');
+          formData.append('model_mode', ctx.modelMode || ctx.model_mode || 'both');
 
           const res = await fetch('/api/v1/analyze-audio', { method: 'POST', body: formData });
           if (res.ok) {
@@ -104,6 +105,9 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel, getContextP
               riskScore: Number(data.final_risk_score ?? data.risk_score ?? 10.0),
               threatTier: data.final_threat_tier ?? data.threat_tier ?? 'SAFE',
               isSynthetic: Boolean(data.is_synthetic || (data.final_risk_score >= 50)),
+              voiceDetectionRisk: Number(data.voice_detection_risk ?? data.risk_breakdown?.voice_detection_risk ?? data.final_risk_score ?? 10.0),
+              contextDetectionRisk: Number(data.context_detection_risk ?? data.risk_breakdown?.context_detection_risk ?? 15.0),
+              analysisMode: data.analysis_mode || 'dual_fusion',
               attributions: data.attributions || {},
               riskBreakdown: data.risk_breakdown || null,
               dspFeatures: data.multi_layer_analysis || data.dsp_features || null,

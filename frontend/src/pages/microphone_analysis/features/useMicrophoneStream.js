@@ -27,7 +27,12 @@ export function useMicrophoneStream(streamMode, contextConfig) {
   const wsClientRef = useRef(null);
   const simulatorRef = useRef(null);
 
-  useEffect(() => { contextRef.current = contextConfig; }, [contextConfig]);
+  useEffect(() => {
+    contextRef.current = contextConfig;
+    if (wsClientRef.current) {
+      wsClientRef.current.sendConfig(contextConfig);
+    }
+  }, [contextConfig]);
 
   useEffect(() => {
     fetch('/api/v1/sample-calls')

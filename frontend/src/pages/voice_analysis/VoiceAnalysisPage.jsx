@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useFileUploadAnalysis } from './features/useFileUploadAnalysis';
 import { AudioForensicIngress } from './features/AudioForensicIngress';
 import { AggregatedVerdictBanner } from './features/AggregatedVerdictBanner';
@@ -7,10 +7,13 @@ import { ForensicPipelineTracker } from './features/ForensicPipelineTracker';
 import { ForensicComparisonGraph } from './features/ForensicComparisonGraph';
 import { ForensicLLMTimelineLogs } from './features/ForensicLLMTimelineLogs';
 import { SpeechTranscriptPanel } from '../../components/voice/SpeechTranscriptPanel';
+import { ModelAnalysisSelector } from '../../components/voice/ModelAnalysisSelector';
+import { DualRiskMeterPanel } from '../../components/voice/DualRiskMeterPanel';
 import './features/ForensicAnalysisView.css';
 import './VoiceAnalysisPage.css';
 
 export function VoiceAnalysisPage() {
+  const [modelMode, setModelMode] = useState('both');
   const {
     uploadedFile,
     customFileResult,
@@ -45,11 +48,18 @@ export function VoiceAnalysisPage() {
         </div>
       </div>
 
-      {/* 2. File Upload Ingress */}
+      {/* 2. Model Selection (Multi-Model vs Single Models) */}
+      <ModelAnalysisSelector
+        selectedMode={modelMode}
+        onSelectMode={(mode) => setModelMode(mode)}
+        disabled={isUploading}
+      />
+
+      {/* 3. File Upload Ingress */}
       <AudioForensicIngress
         uploadedFile={uploadedFile}
-        onFileSelect={(file) => handleFileUpload(file)}
-        onAnalyze={() => handleFileUpload(uploadedFile)}
+        onFileSelect={(file) => handleFileUpload(file, true, { modelMode })}
+        onAnalyze={() => handleFileUpload(uploadedFile, true, { modelMode })}
         onClear={handleClearFile}
         isAnalyzing={isUploading}
         fileError={fileError}
@@ -68,6 +78,16 @@ export function VoiceAnalysisPage() {
         {customFileResult && !isUploading && (
           <>
             <AggregatedVerdictBanner result={customFileResult} />
+
+            <DualRiskMeterPanel
+              voiceRisk={customFileResult.voice_detection_risk}
+              contextRisk={customFileResult.context_detection_risk}
+              compositeRisk={customFileResult.final_risk_score}
+              threatTier={customFileResult.final_threat_tier}
+              action={customFileResult.action_recommendation}
+              analysisMode={customFileResult.analysis_mode || modelMode}
+              speechAnalysis={customFileResult.speech_text_analysis}
+            />
 
             <SpeechTranscriptPanel speechAnalysis={customFileResult.speech_text_analysis} />
 

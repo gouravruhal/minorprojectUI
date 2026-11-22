@@ -103,10 +103,28 @@ class ForensicRiskEngine:
 
         s_context = float(np.clip(ctx_risk, 0.0, 100.0))
 
-        # Weighted Composite (0-100)
-        raw_composite = (0.50 * s_model) + (0.20 * s_prosody) + (0.15 * s_speaker) + (0.15 * s_context)
+        # Voice Detection Risk (Acoustic + Prosody + Speaker)
+        v_sub = (0.50 * s_model) + (0.20 * s_prosody) + (0.15 * s_speaker)
+        voice_risk = float(np.clip(v_sub / 0.85, 0.0, 100.0))
         if is_swap or is_impersonation:
-            raw_composite = max(raw_composite, 75.0)
+            voice_risk = max(voice_risk, 75.0)
+
+        # Context & Conversational Threat Risk
+        context_risk = float(np.clip(s_context, 0.0, 100.0))
+
+        # Model Mode Switch: 'both' / 'dual_fusion' (default), 'acoustic_only', 'context_llm_only'
+        mode = str(ctx.get("model_mode", ctx.get("analysis_mode", "both"))).lower()
+        if mode in ("acoustic", "voice", "acoustic_only"):
+            raw_composite = voice_risk
+            active_mode = "acoustic_only"
+        elif mode in ("context", "llm", "context_llm_only"):
+            raw_composite = context_risk
+            active_mode = "context_llm_only"
+        else:
+            raw_composite = (0.50 * s_model) + (0.20 * s_prosody) + (0.15 * s_speaker) + (0.15 * s_context)
+            if is_swap or is_impersonation:
+                raw_composite = max(raw_composite, 75.0)
+            active_mode = "dual_fusion"
         raw_composite = float(np.clip(raw_composite, 0.0, 100.0))
 
         # Temporal Exponential Smoothing
@@ -135,11 +153,16 @@ class ForensicRiskEngine:
             "risk_score": r_total,
             "threat_tier": tier,
             "action_recommendation": rec,
+            "analysis_mode": active_mode,
+            "voice_detection_risk": round(voice_risk, 1),
+            "context_detection_risk": round(context_risk, 1),
             "risk_breakdown": {
                 "model_score": round(s_model, 1),
                 "prosody_score": round(s_prosody, 1),
                 "speaker_score": round(s_speaker, 1),
                 "context_score": round(s_context, 1),
+                "voice_detection_risk": round(voice_risk, 1),
+                "context_detection_risk": round(context_risk, 1),
                 "weighted_contributions": {
                     "model": round(0.50 * s_model, 1),
                     "prosody": round(0.20 * s_prosody, 1),

@@ -11,12 +11,14 @@ import { MicAutomatedResponseBanner } from './features/MicAutomatedResponseBanne
 import { MicStreamingSourceSelector } from './features/MicStreamingSourceSelector';
 import { MicSecurityAlertModal } from './features/MicSecurityAlertModal';
 import { SpeechTranscriptPanel } from '../../components/voice/SpeechTranscriptPanel';
+import { ModelAnalysisSelector } from '../../components/voice/ModelAnalysisSelector';
+import { DualRiskMeterPanel } from '../../components/voice/DualRiskMeterPanel';
 import './MicrophoneAnalysisPage.css';
 
 export function MicrophoneAnalysisPage() {
   const [streamMode, setStreamMode] = useState('mic');
   const [contextConfig, setContextConfig] = useState({
-    routeType: 'cellular', transactionAmount: 0, knownContact: true, claimedIdentity: ''
+    routeType: 'cellular', transactionAmount: 0, knownContact: true, claimedIdentity: '', modelMode: 'both'
   });
 
   const {
@@ -83,6 +85,12 @@ export function MicrophoneAnalysisPage() {
         </div>
       )}
 
+      <ModelAnalysisSelector
+        selectedMode={contextConfig.modelMode || 'both'}
+        onSelectMode={(mode) => setContextConfig((prev) => ({ ...prev, modelMode: mode }))}
+        disabled={false}
+      />
+
       <MicStreamingSourceSelector
         streamMode={streamMode} onChangeMode={setStreamMode} sampleCalls={sampleCalls}
         selectedSample={selectedSample} onSelectSample={setSelectedSample}
@@ -98,6 +106,17 @@ export function MicrophoneAnalysisPage() {
         <MicLiveWaveform isStreaming={isStreaming} audioLevel={audioLevel} currentChunk={currentChunk} />
         <MicRiskMeter latestResult={latestResult} isStreaming={isStreaming} />
       </div>
+
+      <DualRiskMeterPanel
+        voiceRisk={latestResult?.voiceDetectionRisk || latestResult?.voice_detection_risk}
+        contextRisk={latestResult?.contextDetectionRisk || latestResult?.context_detection_risk}
+        compositeRisk={latestResult?.riskScore || latestResult?.risk_score}
+        threatTier={latestResult?.threatTier || latestResult?.threat_tier}
+        action={latestResult?.action}
+        analysisMode={latestResult?.analysisMode || contextConfig.modelMode}
+        speechAnalysis={latestResult?.speech_text_analysis || latestResult?.speechTextAnalysis}
+        isStreaming={isStreaming}
+      />
 
       <SpeechTranscriptPanel
         speechAnalysis={latestResult?.speech_text_analysis || latestResult?.speechTextAnalysis}

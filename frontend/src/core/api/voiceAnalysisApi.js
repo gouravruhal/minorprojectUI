@@ -94,6 +94,7 @@ export async function analyzeAudioEnterprise(file, context = {}) {
   formData.append('transaction_amount', String(context.transaction_amount || context.transactionAmount || 0));
   formData.append('known_contact', String(context.known_contact !== false && context.knownContact !== false));
   formData.append('claimed_identity', context.claimed_identity || context.claimedIdentity || '');
+  formData.append('model_mode', context.modelMode || context.model_mode || 'both');
   if (context.callerId || context.caller_id) formData.append('caller_id', context.callerId || context.caller_id);
 
   const res = await fetch(`${API_BASE}/v1/analyze-audio`, { method: 'POST', body: formData });

@@ -24,7 +24,7 @@ export function useFileUploadAnalysis() {
   const [chunkState, setChunkState] = useState({ currentChunk: 0, totalChunks: 0, chunkRange: '', status: '' });
   const [fileError, setFileError] = useState(null);
 
-  const handleFileUpload = useCallback(async (file, consent = true) => {
+  const handleFileUpload = useCallback(async (file, consent = true, contextOpts = {}) => {
     if (!file) return;
     setFileError(null);
     if (file.size > MAX_FILE_SIZE) {
@@ -56,7 +56,7 @@ export function useFileUploadAnalysis() {
 
       let backendResult;
       try {
-        backendResult = await analyzeAudioEnterprise(file);
+        backendResult = await analyzeAudioEnterprise(file, contextOpts);
       } catch {
         backendResult = await uploadRecording(file, consent);
       }
@@ -83,6 +83,9 @@ export function useFileUploadAnalysis() {
         isSynthetic: Boolean(risk >= 50),
         riskScore: risk,
         final_risk_score: risk,
+        voice_detection_risk: Number(backendResult.voice_detection_risk ?? risk),
+        context_detection_risk: Number(backendResult.context_detection_risk ?? 15.0),
+        analysis_mode: backendResult.analysis_mode || contextOpts.modelMode || 'dual_fusion',
         final_threat_tier: backendResult.final_threat_tier || (risk >= 70 ? 'CRITICAL' : risk >= 45 ? 'ELEVATED' : 'MINIMAL'),
         action_recommendation: backendResult.action_recommendation || (risk >= 70 ? 'TRIGGER_MFA_CHALLENGE' : 'CONTINUE_MONITORING'),
         confidence: `${Math.round(backendResult.overall_spoof_prob || risk)}%`,
