@@ -15,6 +15,17 @@ from backend.app.api.forensic_stream_routes import router as stream_router
 from backend.app.api.context_routes import router as context_router
 from backend.app.api.telephony_routes import router as telephony_router
 from backend.app.api.security_routes import router as security_router
+from backend.app.api.sdk_routes import router as sdk_router
+
+OPENAPI_TAGS = [
+    {"name": "Developer SDK & Integration", "description": "Client integration snippets for Python, Node.js, and cURL."},
+    {"name": "Streaming Forensic Ingress", "description": "WebSocket live call streams & sample playback."},
+    {"name": "Voice Analysis & Upload", "description": "In-memory zero-disk multi-layer DSP audio analysis."},
+    {"name": "Incident Mitigation & Security", "description": "Automated MFA challenge & token verification."},
+    {"name": "Telephony & Hardware Bridge", "description": "Hardware line tap loop diagnostics and CCITT Q.552 status."},
+    {"name": "Context Analysis", "description": "Metadata ingestion and context risk scoring."},
+    {"name": "System Health", "description": "System readiness and health check."}
+]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -25,8 +36,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="VoiceShield AI Voice Analysis Service",
-    description="Real-time acoustic analysis, microphone streaming, and voice deepfake detection API.",
+    description="Enterprise real-time acoustic analysis, microphone streaming, and voice deepfake detection API.",
     version="2.0.0",
+    openapi_tags=OPENAPI_TAGS,
     lifespan=lifespan
 )
 
@@ -45,6 +57,7 @@ app.include_router(stream_router)
 app.include_router(context_router)
 app.include_router(telephony_router)
 app.include_router(security_router)
+app.include_router(sdk_router)
 
 if __name__ == "__main__":
     import uvicorn

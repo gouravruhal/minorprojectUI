@@ -4,6 +4,7 @@ import { VoiceAnalysisPage } from '../../pages/voice_analysis/VoiceAnalysisPage'
 import { MicrophoneAnalysisPage } from '../../pages/microphone_analysis/MicrophoneAnalysisPage';
 import { TelephonyLinkPage } from '../../pages/telephony_link/TelephonyLinkPage';
 import { HistoryPage } from '../../pages/history/HistoryPage';
+import { DeveloperSdkPage } from '../../pages/developer_sdk/DeveloperSdkPage';
 
 export function AppRouterView({ activeTab, onNavigateTab }) {
   return (
@@ -22,6 +23,8 @@ export function AppRouterView({ activeTab, onNavigateTab }) {
       {activeTab === 'telephony' && <TelephonyLinkPage />}
 
       {activeTab === 'history' && <HistoryPage />}
+
+      {activeTab === 'developer-sdk' && <DeveloperSdkPage />}
     </div>
   );
 }

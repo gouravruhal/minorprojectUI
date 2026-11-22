@@ -55,6 +55,14 @@ export function Navbar({ activeTab, onSelectTab }) {
           >
             <span>History & Logs</span>
           </button>
+          <span className="nav-divider">|</span>
+          <button
+            id="nav-tab-sdk"
+            className={`nav-tab-btn ${activeTab === 'developer-sdk' ? 'active' : ''}`}
+            onClick={() => onSelectTab('developer-sdk')}
+          >
+            <span>API & SDK Docs</span>
+          </button>
         </div>
 
         <div className="navbar-right">

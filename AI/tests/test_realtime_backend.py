@@ -105,5 +105,32 @@ class TestRealtimeBackend(unittest.TestCase):
         self.assertEqual(len(report["segments"]), 9)
         self.assertIn(report["final_threat_tier"], ["CRITICAL", "WARN", "ELEVATED", "HIGH"])
 
+    def test_sdk_snippets_and_endpoints(self):
+        res_snippets = self.client.get("/api/v1/sdk/snippets")
+        self.assertEqual(res_snippets.status_code, 200)
+        data = res_snippets.json()
+        self.assertEqual(data.get("status"), "success")
+        snippets = data.get("snippets", {})
+        self.assertIn("python_rest", snippets)
+        self.assertIn("python_websocket", snippets)
+        self.assertIn("javascript_rest", snippets)
+        self.assertIn("curl", snippets)
+
+        res_eps = self.client.get("/api/v1/sdk/endpoints")
+        self.assertEqual(res_eps.status_code, 200)
+        eps = res_eps.json()
+        paths = [e["path"] for e in eps]
+        self.assertIn("/api/v1/analyze-audio", paths)
+        self.assertIn("/ws/live-call/{call_id}", paths)
+
+    def test_openapi_swagger_docs_available(self):
+        res_docs = self.client.get("/docs")
+        self.assertEqual(res_docs.status_code, 200)
+        res_openapi = self.client.get("/openapi.json")
+        self.assertEqual(res_openapi.status_code, 200)
+        schema = res_openapi.json()
+        self.assertEqual(schema.get("info", {}).get("version"), "2.0.0")
+        self.assertIn("Developer SDK & Integration", [t["name"] for t in schema.get("tags", [])])
+
 if __name__ == "__main__":
     unittest.main()
