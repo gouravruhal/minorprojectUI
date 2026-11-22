@@ -118,5 +118,18 @@ class TestVoiceAnalysisAPI(unittest.TestCase):
         self.assertEqual(list_res.status_code, 200)
         self.assertTrue(any(r["context_id"] == ctx_id for r in list_res.json()))
 
+    def test_sample_calls_endpoints(self):
+        """Verifies GET /api/v1/sample-calls and audio streaming endpoints."""
+        res = self.client.get("/api/v1/sample-calls")
+        self.assertEqual(res.status_code, 200)
+        samples = res.json()
+        self.assertGreaterEqual(len(samples), 2)
+        first_id = samples[0]["id"]
+
+        audio_res = self.client.get(f"/api/v1/sample-calls/{first_id}/audio")
+        self.assertEqual(audio_res.status_code, 200)
+        self.assertEqual(audio_res.headers["content-type"], "audio/wav")
+        self.assertGreater(len(audio_res.content), 1000)
+
 if __name__ == "__main__":
     unittest.main()

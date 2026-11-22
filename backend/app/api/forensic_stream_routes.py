@@ -1,17 +1,39 @@
 """
 FastAPI REST and WebSocket Streaming Routes for Real-Time Call Forensics.
-Exposes POST /api/v1/analyze-audio and WebSocket /ws/live-call/{call_id}.
-Zero-disk in-memory audio processing and context-aware metadata support.
+Exposes POST /api/v1/analyze-audio, WebSocket /ws/live-call/{call_id},
+and sample call streaming audio endpoints for simulated live call playback.
 """
-import json
+import os, json
 from typing import Optional
 import numpy as np
 from fastapi import APIRouter, UploadFile, File, Form, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import Response
 
 from backend.app.services.forensic_stream_service import forensic_stream_service
 from AI.preprocessing.audio_normalizer import decode_audio_bytes
 
 router = APIRouter(tags=["Forensic Call Telemetry"])
+DOWNLOADS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "downloads")
+
+@router.get("/api/v1/sample-calls")
+async def list_sample_calls():
+    """Lists available pre-recorded call samples for simulated live WebSocket playback."""
+    return [
+        {"id": "ai_sample_1.wav", "title": "AI Deepfake Call #1 (HiFi-GAN Vocoder)", "type": "synthetic", "duration_sec": 2.5},
+        {"id": "ai_sample_2.wav", "title": "AI Deepfake Call #2 (Neural Clone)", "type": "synthetic", "duration_sec": 2.5},
+        {"id": "human_sample_1.wav", "title": "Executive Call #1 (Rajesh Sharma - Phonation)", "type": "bona_fide", "duration_sec": 2.8},
+        {"id": "human_sample_2.wav", "title": "Executive Call #2 (Anita Roy - Phonation)", "type": "bona_fide", "duration_sec": 2.6}
+    ]
+
+@router.get("/api/v1/sample-calls/{sample_name}/audio")
+async def get_sample_call_audio(sample_name: str):
+    """Streams sample audio file bytes in-memory for simulated live playback."""
+    path = os.path.join(DOWNLOADS_DIR, sample_name)
+    if not os.path.exists(path) or not sample_name.endswith((".wav", ".mp3", ".m4a")):
+        raise HTTPException(status_code=404, detail="Sample call audio not found.")
+    with open(path, "rb") as f:
+        data = f.read()
+    return Response(content=data, media_type="audio/wav")
 
 @router.post("/api/v1/analyze-audio")
 async def analyze_audio_endpoint(
@@ -25,10 +47,6 @@ async def analyze_audio_endpoint(
     claimed_identity: Optional[str] = Form(None),
     caller_id: Optional[str] = Form(None)
 ):
-    """
-    Ingests call recording in-memory (zero disk writes), extracts multi-view forensic features,
-    runs deep learning inference, and calculates 4-factor context-aware impersonation risk.
-    """
     contents = await file.read()
     if len(contents) < 512:
         raise HTTPException(status_code=400, detail="Audio file empty or corrupted.")
@@ -46,21 +64,15 @@ async def analyze_audio_endpoint(
     }
 
     try:
-        report = forensic_stream_service.analyze_full_call(
-            contents=contents,
-            filename=file.filename,
-            context=context
+        return forensic_stream_service.analyze_full_call(
+            contents=contents, filename=file.filename, context=context
         )
-        return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference failure: {str(e)}")
 
 @router.websocket("/ws/live-call/{call_id}")
 async def live_call_websocket(websocket: WebSocket, call_id: str):
-    """
-    Low-latency WebSocket streaming endpoint for ongoing call monitoring.
-    Accepts 16kHz PCM chunks and emits real-time risk frames and security alerts.
-    """
+    """Low-latency WebSocket streaming endpoint for ongoing call monitoring."""
     await websocket.accept()
     session = forensic_stream_service.get_or_create_call_session(call_id)
 
@@ -97,6 +109,7 @@ async def live_call_websocket(websocket: WebSocket, call_id: str):
                         )
                         await websocket.send_json({"status": "CONFIGURED", "call_id": call_id})
                     elif payload.get("action") == "stop":
+                        await websocket.send_json({"event": "SESSION_STOPPED", "call_id": call_id})
                         break
                 except Exception:
                     pass
