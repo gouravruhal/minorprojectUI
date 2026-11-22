@@ -108,6 +108,7 @@ export async function startMicStream(onChunkEvaluated, onAudioLevel, getContextP
               riskBreakdown: data.risk_breakdown || null,
               dspFeatures: data.multi_layer_analysis || data.dsp_features || null,
               speakerVerification: data.speaker_verification || null,
+              speechTextAnalysis: data.speech_text_analysis || null,
               speakerDrift: data.speaker_verification?.max_drift ?? 0.04,
               latencyMs: data.latency_ms ?? 35,
               action: data.action_recommendation ?? data.action ?? 'CONTINUE_MONITORING'

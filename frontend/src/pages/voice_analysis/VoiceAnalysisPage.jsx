@@ -6,6 +6,7 @@ import { MultiBlockTimeline } from './features/MultiBlockTimeline';
 import { ForensicPipelineTracker } from './features/ForensicPipelineTracker';
 import { ForensicComparisonGraph } from './features/ForensicComparisonGraph';
 import { ForensicLLMTimelineLogs } from './features/ForensicLLMTimelineLogs';
+import { SpeechTranscriptPanel } from '../../components/voice/SpeechTranscriptPanel';
 import './features/ForensicAnalysisView.css';
 import './VoiceAnalysisPage.css';
 
@@ -67,6 +68,8 @@ export function VoiceAnalysisPage() {
         {customFileResult && !isUploading && (
           <>
             <AggregatedVerdictBanner result={customFileResult} />
+
+            <SpeechTranscriptPanel speechAnalysis={customFileResult.speech_text_analysis} />
 
             <MultiBlockTimeline
               segments={customFileResult.segments || []}

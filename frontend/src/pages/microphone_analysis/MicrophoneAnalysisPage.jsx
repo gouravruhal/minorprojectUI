@@ -10,6 +10,7 @@ import { MicContextMetadataPanel } from './features/MicContextMetadataPanel';
 import { MicAutomatedResponseBanner } from './features/MicAutomatedResponseBanner';
 import { MicStreamingSourceSelector } from './features/MicStreamingSourceSelector';
 import { MicSecurityAlertModal } from './features/MicSecurityAlertModal';
+import { SpeechTranscriptPanel } from '../../components/voice/SpeechTranscriptPanel';
 import './MicrophoneAnalysisPage.css';
 
 export function MicrophoneAnalysisPage() {
@@ -97,6 +98,11 @@ export function MicrophoneAnalysisPage() {
         <MicLiveWaveform isStreaming={isStreaming} audioLevel={audioLevel} currentChunk={currentChunk} />
         <MicRiskMeter latestResult={latestResult} isStreaming={isStreaming} />
       </div>
+
+      <SpeechTranscriptPanel
+        speechAnalysis={latestResult?.speech_text_analysis || latestResult?.speechTextAnalysis}
+        isStreaming={isStreaming}
+      />
 
       <MicSessionTimelineChart logs={logs} isStreaming={isStreaming} durationSec={elapsedSec} />
       <MicTelemetryLogs logs={logs} />

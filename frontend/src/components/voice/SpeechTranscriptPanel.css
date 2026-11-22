@@ -1,0 +1,132 @@
+.speech-transcript-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.transcript-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .transcript-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.transcript-box-col,
+.attribution-box-col {
+  padding: 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transcript-box-header,
+.attribution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transcript-label,
+.attribution-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim, #64748b);
+}
+
+.transcript-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text-color, #1e293b);
+  min-height: 50px;
+}
+
+.attribution-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attr-title {
+  font-size: 0.8rem;
+  color: var(--text-dim, #64748b);
+}
+
+.flagged-phrases-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phrases-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--danger-color, #ef4444);
+}
+
+.phrases-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.phrase-chip-card {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-left: 3px solid var(--danger-color, #ef4444);
+}
+
+.phrase-chip-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phrase-quote {
+  font-size: 0.85rem;
+}
+
+.phrase-desc {
+  margin: 0;
+}
+
+.cross-modal-reasoning-box {
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-left: 3px solid var(--accent-color, #f97316);
+}
+
+.reasoning-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.reasoning-body {
+  margin: 0;
+  line-height: 1.5;
+}

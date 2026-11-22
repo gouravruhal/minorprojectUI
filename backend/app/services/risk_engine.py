@@ -22,13 +22,15 @@ class ForensicRiskEngine:
         speaker_metrics: Optional[Dict[str, Any]] = None,
         speaker_drift: Optional[float] = None,
         voice_swap_detected: Optional[bool] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
+        speech_analysis: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Calculates 4-factor composite risk score R in [0, 100]."""
         attrs = attributions or {}
         dsp = dsp_features or {}
         spk = dict(speaker_metrics or {})
         ctx = context or {}
+        sp_llm = speech_analysis or {}
 
         if speaker_drift is not None:
             spk["speaker_drift"] = speaker_drift
@@ -91,6 +93,13 @@ class ForensicRiskEngine:
         sens = str(ctx.get("transaction_sensitivity", "medium")).lower()
         if sens in ("high", "critical"):
             ctx_risk += 15.0
+
+        sem_threat = float(sp_llm.get("semantic_threat_score", 0.0))
+        if sem_threat > 0.0:
+            ctx_risk += sem_threat * 0.40
+        if sp_llm.get("impersonation_claim_detected", False):
+            ctx_risk += 35.0
+            is_impersonation = True
 
         s_context = float(np.clip(ctx_risk, 0.0, 100.0))
 

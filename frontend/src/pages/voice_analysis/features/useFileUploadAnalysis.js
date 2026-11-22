@@ -91,6 +91,7 @@ export function useFileUploadAnalysis() {
         segmentsCount: backendResult.segments_count || (backendResult.segments ? backendResult.segments.length : 1),
         peak_segment: backendResult.peak_segment,
         speaker_verification: backendResult.speaker_verification,
+        speech_text_analysis: backendResult.speech_text_analysis || null,
         attributions: backendResult.attributions || {},
         timeline_5s_intervals: intervals,
         comparison_metrics: compMetrics,
